@@ -1,0 +1,91 @@
+<!-- templates/base.html -->
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>{% block title %}<span style="color:black;">Stor<span style="color:red;">Q</span>{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+{% comment %}     <link rel="stylesheet" type="text/css" href="{% static 'css/vendor.css' %}">
+ {% endcomment %}    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&family=Marcellus&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+</head>
+<style>
+    body {
+  font-family: var(--body-font);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--body-color);
+  letter-spacing: 0.03rem;
+  background: #e0dfdbff !important;
+}
+
+</style>
+
+<body>
+     <!-- 🔹 Marquee Section with CSS animation -->
+<div class="marquee-container bg-dark text-white py-2 overflow-hidden position-relative">
+    <div class="marquee-track d-flex">
+        <span class="marquee-item">🎉 Welcome to Stor<span style="color:red;">Q</span>! — Enjoy the best deals and offers today! 🛍️</span>
+        <span class="marquee-item">✨ New Arrivals ✨</span>
+        <span class="marquee-item">🌟 Limited Edition Collection 🌟</span>
+        <span class="marquee-item">🔥 Exclusive Offers 🔥</span>
+        <span class="marquee-item">🎁 Curated Fashion Essentials 🎁</span>
+    </div>
+</div>
+
+<style>
+.marquee-container {
+    width: 100%;
+    white-space: nowrap;
+}
+
+.marquee-track {
+    display: inline-block;
+    padding-left: 100%; /* Start outside the container */
+    animation: marquee 20s linear infinite;
+}
+
+.marquee-item {
+    display: inline-block;
+    margin-right: 4rem; /* Space between items */
+    font-family: 'Jost', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+@keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+}
+</style>
+
+
+    {% include "header.html" %}
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    {% include "footer.html" %}
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/plugins.js' %}"></script>
+    <script src="{% static 'js/SmoothScroll.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+    <script src="{% static 'js/script.min.js' %}"></script>
+   
+<!-- Bootstrap Bundle (JS + Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

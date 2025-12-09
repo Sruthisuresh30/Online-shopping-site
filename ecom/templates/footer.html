@@ -1,0 +1,190 @@
+<style>
+/* -----------------------------
+    FOOTER COMPONENT STYLES
+----------------------------- */
+.footer {
+    background: #f5f5f5; /* Light gray background for contrast */
+    position: relative;
+    overflow: hidden;
+}
+
+/* --- BRAND TITLE SHIMMER --- */
+.brand-title {
+    color: #5c3b09; /* Dark brown color */
+    position: relative;
+    font-weight: 700;
+}
+.brand-title::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    height: 2px;
+    width: 100%;
+    background: linear-gradient(90deg, transparent, #c7a56d, #5c3b09, transparent); /* Gold to Brown Gradient */
+    animation: shimmer 4s ease-in-out infinite;
+}
+@keyframes shimmer {
+    0% { opacity: 0.3; }
+    50% { opacity: 1; }
+    100% { opacity: 0.3; }
+}
+
+/* --- LINKS --- */
+.section-title {
+    color: #5c3b09; /* Dark brown for section titles */
+}
+.footer-link {
+    color: #7b6b4d; /* Muted brown/gray for links */
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 0.4rem;
+    transition: color 0.3s ease, transform 0.3s ease, text-shadow 0.3s ease;
+}
+.footer-link:hover {
+    color: #5c3b09;
+    transform: translateX(3px);
+    text-shadow: 0 0 6px #c7a56d; /* Light gold shadow */
+}
+
+/* --- SOCIAL ICONS --- */
+.social-icon {
+    color: #5c3b09;
+    font-size: 1.3rem;
+    transition: transform 0.3s ease, color 0.3s ease, text-shadow 0.3s ease;
+}
+.social-icon:hover {
+    color: #3e2a08;
+    transform: scale(1.2);
+    text-shadow: 0 0 8px #c7a56d;
+}
+
+/* --- SUBSCRIBE BUTTON --- */
+.subscribe-btn {
+    background-color: #5c3b09;
+    color: #fff;
+    transition: all 0.4s ease;
+    animation: pulseBtn 2s infinite alternate;
+    border: none;
+}
+.subscribe-btn:hover {
+    background-color: #3e2a08;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(92,59,9,0.4);
+    transform: scale(1.05);
+    animation: none;
+}
+@keyframes pulseBtn {
+    0% { box-shadow: 0 0 6px rgba(92,59,9,0.4); transform: scale(1); }
+    50% { box-shadow: 0 0 14px rgba(92,59,9,0.6); transform: scale(1.03); }
+    100% { box-shadow: 0 0 6px rgba(92,59,9,0.4); transform: scale(1); }
+}
+
+/* --- NEWSLETTER INPUT --- */
+.form-control.rounded-pill {
+    border: 1px solid #c7a56d; /* Gold border */
+}
+
+/* --- DIAGONAL GOLDEN BEAM --- */
+.gold-beam-diagonal {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 4px;
+    background: linear-gradient(120deg, transparent, #c7a56d, #5c3b09, #c7a56d, transparent);
+    box-shadow: 0 0 10px rgba(199,165,109,0.4);
+    animation: moveBeamDiagonal 15s linear infinite;
+    z-index: 10;
+}
+@keyframes moveBeamDiagonal {
+    0% { transform: rotate(0deg) translateX(-100%); opacity: 0.4; }
+    50% { transform: rotate(0deg) translateX(0%); opacity: 0.7; }
+    100% { transform: rotate(0deg) translateX(100%); opacity: 0.4; }
+}
+
+/* --- FADE-UP ON SCROLL --- */
+.fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease-out;
+}
+.fade-up.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+</style>
+
+<footer class="footer text-dark pt-5 pb-4">
+    <div class="container">
+        <div class="row gy-5 align-items-start text-center text-md-start fade-up">
+
+            <div class="col-12 col-md-4 fade-up">
+                <h4 class="fw-bold mb-3 brand-title">StorQ</h4>
+                <p class="small text-muted mb-4">
+                    Curated fashion & lifestyle essentials since 1986.<br>
+                    Discover collections that define your unique style.
+                </p>
+                <div class="d-flex justify-content-center justify-content-md-start gap-3">
+                    <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
+                    <a href="#" class="social-icon"><i class="bi bi-twitter-x"></i></a>
+                    <a href="#" class="social-icon"><i class="bi bi-pinterest"></i></a>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-2 fade-up">
+                <h6 class="fw-bold mb-3 section-title">Quick Links</h6>
+                <ul class="list-unstyled small">
+                    <li><a href="{% url 'home' %}" class="footer-link">Home</a></li>
+                    <li><a href="{% url 'collection' %}" class="footer-link">Collections</a></li>
+                    <li><a href="{% url 'new' %}" class="footer-link">New Arrivals</a></li>
+                    <li><a href="{% url 'about' %}" class="footer-link">About</a></li>
+                    <li><a href="{% url 'contact' %}" class="footer-link">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="col-6 col-md-2 fade-up">
+                <h6 class="fw-bold mb-3 section-title">Support</h6>
+                <ul class="list-unstyled small">
+                    <li><a href="#" class="footer-link">FAQs</a></li>
+                    <li><a href="#" class="footer-link">Shipping</a></li>
+                    <li><a href="#" class="footer-link">Returns</a></li>
+                    <li><a href="#" class="footer-link">Privacy Policy</a></li>
+                </ul>
+            </div>
+
+            <div class="col-12 col-md-4 fade-up">
+                <h6 class="fw-bold mb-3 section-title">Stay Updated</h6>
+                <p class="small text-muted mb-3">Join our list for the latest style drops & exclusive offers</p>
+                <form class="d-flex flex-column flex-sm-row gap-2">
+                    <input type="email" class="form-control form-control-sm rounded-pill" placeholder="Your email">
+                    <button class="btn btn-sm rounded-pill px-3 subscribe-btn" type="submit">Subscribe</button>
+                </form>
+            </div>
+        </div>
+
+        <hr class="my-4 opacity-50 fade-up">
+
+        <div class="text-center small text-muted fade-up bottom-text">
+            © 1986–2025 <span class="fw-bold" style="color:#5c3b09;">StorQ</span>. All rights reserved.
+        </div>
+    </div>
+
+    <div class="gold-beam-diagonal"></div>
+</footer>
+
+<script>
+    // Fade-up animation on scroll
+    document.addEventListener("DOMContentLoaded", function() {
+        const elements = document.querySelectorAll('.fade-up');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('show');
+                }
+            });
+        }, { threshold: 0.2 });
+        elements.forEach(el => observer.observe(el));
+    });
+</script>

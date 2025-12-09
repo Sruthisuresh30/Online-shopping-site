@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}About Us | StorQ{% endblock %}
+
+{% block content %}
+
+<!-- ===== HERO SECTION ===== -->
+
+<section class="about-hero">
+  <div class="hero-bg"></div>
+  <div class="container hero-content text-center">
+    <h1 data-aos="fade-down">About <span>Stor<span class="highlight">Q</span></span></h1>
+    <p data-aos="fade-up" data-aos-delay="200">Crafting stories in fashion, one collection at a time.</p>
+    <hr data-aos="zoom-in" data-aos-delay="400">
+    <a href="#our-stores" class="scroll-down" data-aos="fade-up" data-aos-delay="600">
+      <i class="bi bi-arrow-down-circle"></i>
+    </a>
+  </div>
+</section>
+
+<!-- ===== ABOUT CONTENT SECTION ===== -->
+
+<section id="about-content" class="about-content py-5">
+  <div class="container text-center">
+    <h2 data-aos="fade-up">Our Philosophy</h2>
+    <p data-aos="fade-up" data-aos-delay="200">Every fabric, cut, and silhouette at <strong>StorQ</strong> speaks a language of purpose, beauty, and timeless design.</p>
+    <hr data-aos="zoom-in" data-aos-delay="400">
+
+
+<div class="row g-4 justify-content-center">
+  <!-- Card 1 -->
+  <div class="col-md-6 col-lg-4" data-aos="fade-up">
+    <div class="card about-card">
+      <i class="bi bi-book-half"></i>
+      <h3>Discover the Story</h3>
+      <p>At <strong>StorQ</strong>, fashion is more than clothing—it’s a canvas for expression. Each piece tells a story of creativity and individuality.</p>
+    </div>
+  </div>
+  <!-- Card 2 -->
+  <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+    <div class="card about-card">
+      <i class="bi bi-lightbulb"></i>
+      <h3>Poetic & Inspirational</h3>
+      <p>Every stitch carries emotion, every silhouette tells a tale. Our collections speak of elegance, strength, and individuality.</p>
+    </div>
+  </div>
+  <!-- Card 3 -->
+  <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+    <div class="card about-card">
+      <i class="bi bi-stars"></i>
+      <h3>Modern & Confident</h3>
+      <p>Each collection captures a mood, a movement, a moment. Empowering you to express yourself with confidence and sophistication.</p>
+    </div>
+  </div>
+  <!-- Card 4 -->
+  <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
+    <div class="card about-card">
+      <i class="bi bi-people"></i>
+      <h3>Community-Focused</h3>
+      <p>Fashion is our language. Together we create stories that are timeless, expressive, and bold. Be part of our journey.</p>
+      <a href="{% url 'contact' %}" class="btn btn-outline-danger mt-3">Join Us</a>
+    </div>
+  </div>
+  <!-- Card 5 -->
+  <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="400">
+    <div class="card about-card">
+      <i class="bi bi-palette"></i>
+      <h3>Artistic & Emotional</h3>
+      <p>Every collection is a chapter, every garment a verse—celebrating individuality, elegance, and emotion.</p>
+    </div>
+  </div>
+  <!-- Card 6 -->
+  <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="500">
+    <div class="card about-card">
+      <i class="bi bi-pen"></i>
+      <h3>Minimalist & Purpose-Driven</h3>
+      <p>Each creation embodies thought, intention, and artistry. Wear your story with confidence and purpose.</p>
+    </div>
+  </div>
+</div>
+
+
+  </div>
+</section>
+
+<!-- ===== CUSTOM CSS ===== -->
+
+<style>
+/* HERO SECTION */
+.about-hero {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  text-align: center;
+}
+.hero-bg {
+  position: absolute;
+  top:0; left:0; width:100%; height:100%;
+  background-image: url('{% static "images/n5.avif" %}');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  opacity: 0.5;
+  z-index: 0;
+}
+.hero-content { position: relative; z-index:1; }
+.hero-content h1 { font-size:3rem; font-family:'Helvetica Neue', sans-serif; color:#000; }
+.hero-content .highlight { color:red; }
+.hero-content p { color:#333; font-size:1.2rem; }
+.hero-content hr { width:80px; border:2px solid #ff4b4b; margin:auto; margin-top:1rem; }
+.scroll-down { display:inline-block; margin-top:30px; animation: bounce 2s infinite, glow 2s infinite alternate; color:#ff4b4b; font-size:2.3rem; }
+@keyframes bounce {0%,20%,50%,80%,100% { transform: translateY(0); } 40% { transform: translateY(-10px); } 60% { transform: translateY(-5px); }}
+@keyframes glow {0% { filter: drop-shadow(0 0 2px rgba(255,75,75,0.4)); } 50% { filter: drop-shadow(0 0 8px rgba(255,75,75,0.8)); } 100% { filter: drop-shadow(0 0 3px rgba(255,75,75,0.5)); }}
+
+
+/* ABOUT CONTENT SECTION */
+.about-content { background-color:#fffaf5; }
+.about-content h2 { font-size:2.5rem; margin-bottom:1rem; }
+.about-content hr { width:60px; border:2px solid #ff4b4b; margin:auto; margin-bottom:2rem; }
+.about-card {
+  background:#fff8f0;
+  border-radius:30px; /* MODIFIED: Increased for a much rounder, "pill" shape */
+  padding:1.5rem; /* MODIFIED: Slightly reduced to make the card more compact */
+  height:100%;
+  box-shadow:0 4px 12px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align:center;
+  display:flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.about-card i { font-size:2.5rem; color:#ff4b4b; transition: transform 0.3s ease; margin-bottom:1rem; }
+.about-card h3 { margin-top:0.5rem; margin-bottom:0.5rem; }
+.about-card:hover { transform: translateY(-6px) scale(1.02); box-shadow:0 12px 30px rgba(0,0,0,0.2); }
+.about-card:hover i { transform: rotate(10deg) scale(1.1); }
+</style>
+
+<!-- ===== AOS INIT ===== -->
+
+<script>
+  AOS.init({ once: true, duration: 1000 });
+</script>
+
+{% endblock %}

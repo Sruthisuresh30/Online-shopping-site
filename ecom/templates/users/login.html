@@ -1,0 +1,233 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+    }
+
+    /* Full-Page Gradient Background */
+    body {
+        background: linear-gradient(135deg, #99B9FF, #E4EDFF, #FFFFFF);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 30px;
+    }
+
+    /* Main Container */
+    .container {
+        display: flex;
+        gap: 40px;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        max-width: 1300px;
+    }
+
+    /* Left Section - Bigger */
+    .box-1 {
+        flex: 1;
+        text-align: center;
+        padding: 40px 20px;
+    }
+    .content-holder h2 {
+        font-size: 50px;
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 20px;
+    }
+
+    .content-holder button {
+        border: none;
+        padding: 15px 20px;
+        font-size: 18px;
+        border-radius: 10px;
+        background-color: #3B82F6;
+        color: white;
+        width: 220px;
+        cursor: pointer;
+        transition: 0.3s ease;
+    }
+
+    .content-holder button:hover {
+        background-color: #2563EB;
+        transform: scale(1.07);
+    }
+
+    /* Right Section — Login Card Enlarged */
+    .box-2 {
+        flex: 1;
+        max-width: 550px;
+        background: rgba(255, 255, 255, 0.65);
+        backdrop-filter: blur(12px);
+        padding: 45px 40px;
+        border-radius: 18px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+
+    .login-form-container h1 {
+        font-size: 34px;
+        font-weight: 700;
+        color: #1f2937;
+        text-align: center;
+        margin-bottom: 35px;
+    }
+
+    .input-field {
+        width: 100%;
+        padding: 15px 18px;
+        border-radius: 10px;
+        border: 1px solid #ccd2e3;
+        font-size: 17px;
+        margin-bottom: 22px;
+        outline: none;
+    }
+
+    .input-field:focus {
+        border-color: #3B82F6;
+        box-shadow: 0 0 8px rgba(59,130,246,0.4);
+    }
+
+    .login-button {
+        width: 100%;
+        padding: 16px;
+        background: #3B82F6;
+        border: none;
+        border-radius: 10px;
+        font-size: 18px;
+        font-weight: 600;
+        color: white;
+        cursor: pointer;
+        transition: 0.3s ease;
+    }
+
+    .login-button:hover {
+        background: #2563EB;
+        transform: scale(1.03);
+    }
+
+    /* ERROR POPUP */
+    .error-container {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.35);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+    }
+
+    .error-message {
+        background: white;
+        padding: 30px 40px;
+        border-radius: 14px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+        text-align: center;
+        max-width: 420px;
+    }
+
+    .error-message h2 {
+        font-size: 26px;
+        color: #DC2626;
+        margin-bottom: 15px;
+    }
+
+    .error-message p {
+        color: #444;
+        margin-bottom: 15px;
+        font-size: 16px;
+    }
+
+    .error-button {
+        background: #DC2626;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .error-button:hover {
+        background: #B91C1C;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+        .container {
+            flex-direction: column;
+            gap: 30px;
+            text-align: center;
+        }
+        .box-1 {
+            order: 2;
+        }
+        .box-2 {
+            order: 1;
+            width: 100%;
+            max-width: 500px;
+        }
+    }
+</style>
+
+</head>
+<body>
+
+{% if messages %}
+    <div class="error-container">
+        <div class="error-message">
+            <h2>Oops!</h2>
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+
+            {% if 'Account does not exist' in messages|join:'' %}
+                <button class="error-button" onclick="window.location.href='{% url 'users:signup' %}'">Create Account</button>
+            {% else %}
+                <button class="error-button" onclick="window.location.reload()">Try Again</button>
+            {% endif %}
+        </div>
+    </div>
+{% endif %}
+
+<div class="container">
+    <!-- LEFT -->
+    <div class="box-1">
+        <div class="content-holder">
+            <h2>Welcome Back!</h2>
+            <button onclick="signup()">Create Account</button>
+        </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="box-2">
+        <div class="login-form-container">
+            <h1>Login to Continue</h1>
+            <form method="post">
+                {% csrf_token %}
+                <input type="text" name="username" placeholder="Enter Username" class="input-field" required>
+                <input type="password" name="password" placeholder="Enter Password" class="input-field" required>
+                <button class="login-button" type="submit">Login</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function signup() {
+        window.location.href = "{% url 'users:signup' %}";
+    }
+</script>
+
+</body>
+</html>

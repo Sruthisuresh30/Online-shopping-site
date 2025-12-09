@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{%load static%}
+{% block content %}
+
+<style>
+    /* Page Background */
+    body {
+        background: linear-gradient(135deg, #0d0d0f, #12141c, #1b1e2c);
+        font-family: "Poppins", sans-serif;
+    }
+
+    .container h2 {
+        color: #00eaff;
+        text-shadow: 0 0 10px #00eaff;
+        margin-bottom: 25px;
+    }
+
+    /* Glassmorphism Card */
+    .txn-card {
+        background: rgba(255, 255, 255, 0.07);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 16px;
+        padding: 20px;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 0 25px rgba(0, 255, 255, 0.1);
+        transition: all 0.3s ease-in-out;
+    }
+
+    .txn-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 0 30px rgba(0, 255, 255, 0.25);
+    }
+
+    /* Text Colors */
+    strong, .fw-bold {
+        color: #e6f7ff;
+    }
+
+    .small {
+        color: #9aa1b5 !important;
+    }
+
+    /* Badges Custom */
+    .badge-info {
+        background: linear-gradient(90deg, #007bff, #00b7ff);
+        box-shadow: 0 0 10px #009dff;
+    }
+
+    .badge-success {
+        background: linear-gradient(90deg, #00ffbf, #00e0a0);
+        color: #000;
+        box-shadow: 0 0 10px #00ffbf;
+    }
+
+    /* No Data */
+    .empty-msg {
+        color: #b3c7d6;
+        text-align: center;
+        padding: 40px;
+        font-size: 18px;
+    }
+</style>
+
+<div class="container py-4">
+    <h2>💳 Transactions</h2>
+
+    {% if transactions %}
+        <div class="row g-4">
+            {% for txn in transactions %}
+            <div class="col-12">
+                <div class="txn-card">
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>Txn ID:</strong> {{ txn.payment_id }}
+
+                            {% if txn.order %}
+                            <span class="badge badge-info ms-2">
+                                Order #{{ txn.order.id }}
+                            </span>
+                            {% endif %}
+                        </div>
+
+                        <div class="text-muted small">
+                            {{ txn.created_at|date:"Y-m-d H:i" }}
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <div>
+                            <span class="fw-bold">Amount:</span>
+                            <span style="color:#00eaff;">₹{{ txn.amount }}</span>
+                        </div>
+
+                        <div>
+                            <span class="badge badge-success">
+                                {{ txn.status|title }}
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="empty-msg">No transactions found.</p>
+    {% endif %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<section class="wishlist-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+
+                <div class="wishlist-card p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="fw-bold text-light mb-0">My Wishlist</h2>
+                        <h6 class="mb-0 text-secondary">{{ wishlist_items|length }} items</h6>
+                    </div>
+
+                    <div class="wishlist-table">
+                        <hr class="border-secondary">
+
+                        <table class="table wishlist-table-dark align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Product Name</th>
+                                    <th>Unit Price</th>
+                                    <th>Stock Status</th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for item in wishlist_items %}
+                                <tr class="wishlist-row">
+                                    <td>
+                                        <div class="wishlist-display-flex">
+                                            <img src="{{ item.product.image.url }}" class="wishlist-product-img">
+                                            <span class="wishlist-name-product text-light">{{ item.product.name }}</span>
+                                        </div>
+                                    </td>
+
+                                    <td class="text-light">₹{{ item.product.price }}</td>
+
+                                    <td>
+                                        <span class="wishlist-in-stock-box">In Stock</span>
+                                    </td>
+
+                                    <td>
+                                        <form method="post" action="{% url 'cart' %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="product_slug" value="{{ item.product.slug }}">
+                                            <button type="submit"
+                                                class="wishlist-round-black-btn wishlist-small-btn">
+                                                Add to Cart
+                                            </button>
+                                        </form>
+                                    </td>
+
+                                    <td class="text-center">
+                                        <form method="post" action="{% url 'wishlist' %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="remove_slug" value="{{ item.product.slug }}">
+                                            <button type="submit" class="wishlist-trash-icon btn p-0">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+                        <hr class="border-secondary">
+
+                        <div class="pt-3">
+                            <a href="{% url 'home' %}" class="text-light text-decoration-none">
+                                <i class="bi bi-arrow-left me-2"></i>Back to shop
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+/* ▶ Entire Background Dark */
+body {
+    background: #0e0f14 !important;
+    color: #fff !important;
+}
+
+/* ▶ Card with Glow */
+.wishlist-card {
+    background: #151720;
+    border-radius: 18px;
+    box-shadow: 0px 0px 25px rgba(0, 183, 255, 0.08);
+}
+
+/* ▶ Table Dark Mode */
+.wishlist-table-dark thead tr {
+    background: #1c1e28;
+    color: #b8c0ff;
+}
+
+.wishlist-table-dark tbody tr {
+    background: #1a1c24;
+    transition: 0.2s;
+}
+
+.wishlist-table-dark tbody tr:hover {
+    background: #232632;
+    transform: scale(1.01);
+}
+
+/* ▶ Product Image */
+.wishlist-product-img {
+    width: 70px;
+    height: 70px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+/* ▶ Flex */
+.wishlist-display-flex {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* ▶ Neon Green Stock Label */
+.wishlist-in-stock-box {
+    background: #0f5132;
+    color: #d1e7dd;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+}
+
+/* ▶ Button */
+.wishlist-round-black-btn {
+    background: #00b7ff;
+    color: #000;
+    border-radius: 20px;
+    padding: 6px 16px;
+    border: none;
+    transition: 0.3s;
+    font-weight: 500;
+}
+
+.wishlist-round-black-btn:hover {
+    background: #4dd2ff;
+}
+
+/* ▶ Trash Icon */
+.wishlist-trash-icon {
+    font-size: 1.3rem;
+    color: #ff6b6b;
+    transition: 0.2s;
+}
+
+.wishlist-trash-icon:hover {
+    color: #ff3b3b;
+    transform: scale(1.15);
+}
+</style>
+
+{% endblock %}

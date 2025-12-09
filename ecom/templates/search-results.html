@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}Search Results | StorQ{% endblock %}
+{% block content %}
+
+<style>
+    /* --- Dark Theme Styling --- */
+    body {
+        background: #0d0d0d !important;
+        color: #e6e6e6;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    h2 {
+        color: #00b4ff;
+        font-weight: 600;
+    }
+
+    /* --- Product Card --- */
+    .product-card {
+        background: #1a1a1a;
+        border: 1px solid #222;
+        border-radius: 14px;
+        overflow: hidden;
+        transition: all 0.35s ease;
+        box-shadow: 0 0 10px rgba(0, 188, 255, 0.05);
+    }
+
+    .product-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 0 22px rgba(0, 188, 255, 0.4);
+        border-color: #00b4ff;
+    }
+
+    .product-card img {
+        height: 210px;
+        object-fit: cover;
+        border-bottom: 1px solid #333;
+    }
+
+    .product-card .card-title {
+        color: #fff;
+        font-size: 1.05rem;
+        font-weight: 600;
+    }
+
+    .product-card .card-text {
+        color: #00ffcc;
+        font-size: 1rem;
+    }
+
+    .btn-shop {
+        border-radius: 8px;
+        padding: 5px 12px;
+        border: 1px solid #00b4ff;
+        color: #00b4ff;
+        font-weight: 500;
+        transition: all 0.3s;
+    }
+
+    .btn-shop:hover {
+        background: #00b4ff;
+        color: #000;
+        box-shadow: 0 0 12px #00b4ff;
+    }
+
+    .no-results {
+        color: #999;
+        font-size: 1.1rem;
+    }
+</style>
+
+<div class="container my-5">
+    <h2 class="mb-4">Results for "{{ query }}"</h2>
+
+    {% if results %}
+        <div class="row g-4">
+            {% for product in results %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="product-card h-100">
+                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text fw-bold">₹{{ product.price }}</p>
+                        <a href="{% url 'product_detail' category=product.category slug=product.slug %}" class="btn btn-shop btn-sm">Shop Now</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="no-results">No products found.</div>
+    {% endif %}
+</div>
+
+{% endblock %}

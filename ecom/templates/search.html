@@ -1,0 +1,244 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% load static %}
+<!DOCTYPE html>
+
+<style>
+/* ---------- PAGE BACKGROUND ---------- */
+.ss-container {
+    background: linear-gradient(135deg, #0d0d16, #1a1a2e, #16213e);
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    font-family: "Poppins", sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+
+/* ---------- CENTER CONTAINER ---------- */
+.center-container {
+    width: 100%;
+    text-align: center;
+}
+
+/* ---------- SEARCH BOX (Glass + Glow) ---------- */
+.search-label {
+    display: inline-flex;
+    align-items: center;
+    height: 55px;
+    width: 60px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 2px solid rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(10px);
+    border-radius: 50px;
+    padding: 0 14px;
+    transition: 0.4s ease;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Expand animation */
+.search-label.active,
+.search-label:focus-within {
+    width: 380px;
+    border-color: #00d4ff;
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+}
+
+/* ---------- INPUT ---------- */
+.search-label input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #ffffff;
+    padding-left: 12px;
+    font-size: 16px;
+}
+
+/* Placeholder color */
+.search-label input::placeholder {
+    color: #cfcfcf;
+}
+
+/* ---------- SEARCH ICON ---------- */
+.search-icon {
+    font-size: 22px;
+    color: #00d4ff;
+    transition: 0.3s;
+}
+
+/* ---------- SUBMIT BUTTON ---------- */
+.search-label .btn {
+    background: #00d4ff;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    color: #000;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+}
+
+.search-label .btn:hover {
+    background: #5ceaff;
+    transform: scale(1.08);
+}
+
+/* ---------- AUTO-SUGGEST DROPDOWN ---------- */
+#suggestions {
+    top: 60px;
+    max-height: 250px;
+    overflow-y: auto;
+    border-radius: 10px;
+    box-shadow: rgba(0, 212, 255, 0.4) 0 0 20px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+}
+
+#suggestions .list-group-item {
+    background: transparent;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    transition: 0.3s;
+}
+
+#suggestions .list-group-item:hover {
+    background: rgba(0, 212, 255, 0.25);
+    color: #fff;
+    letter-spacing: 0.5px;
+}
+
+/* ---------- RESULTS ---------- */
+.results-box {
+    margin-top: 30px;
+    background: rgba(255, 255, 255, 0.08);
+    padding: 25px;
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+}
+
+.results-box h5 {
+    color: #00d4ff;
+}
+
+.list-group-item a {
+    color: #00d4ff !important;
+    font-weight: 500;
+}
+
+.list-group-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    margin-bottom: 6px;
+    transition: 0.3s;
+}
+
+.list-group-item:hover {
+    background: rgba(0, 212, 255, 0.15);
+}
+</style>
+
+<div class="ss-container">
+
+    <div class="center-container">
+        <!-- SEARCH FORM -->
+        <form method="get" action="{% url 'search' %}" autocomplete="off">
+            <label class="search-label" id="searchLabel">
+                <i class="bi bi-search search-icon"></i>
+
+                <input id="inpt_search" name="q" type="text" placeholder="Search products..." autocomplete="off">
+
+                <div id="suggestions" class="list-group position-absolute w-100" style="display:none;"></div>
+
+                <button class="btn" type="submit"><i class="bi bi-arrow-right"></i></button>
+            </label>
+        </form>
+
+        <p class="mt-3 text-secondary">Pull the icon to see the magic ✨</p>
+
+        <!-- RESULTS -->
+        {% if results %}
+        <div class="results-box">
+            <h5>Results for "{{ query }}":</h5>
+            <ul class="list-group">
+                {% for product in results %}
+                <li class="list-group-item">
+                    <a href="{% url 'product_detail' category=product.category slug=product.slug %}">
+                        {{ product.name }} — ₹{{ product.price }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        {% elif query %}
+        <div class="results-box text-danger">No results found for "{{ query }}".</div>
+        {% endif %}
+    </div>
+
+</div>
+
+<!-- BOOTSTRAP ICONS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+<!-- SCRIPTS -->
+<script>
+const searchInput = document.getElementById('inpt_search');
+const searchLabel = document.getElementById('searchLabel');
+const suggestionsBox = document.getElementById('suggestions');
+
+searchInput.addEventListener('focus', () => searchLabel.classList.add('active'));
+searchInput.addEventListener('blur', () => {
+    if (!searchInput.value) searchLabel.classList.remove('active');
+});
+
+/* ---------- LIVE SUGGESTIONS ---------- */
+searchInput.addEventListener('input', function() {
+    const query = this.value;
+    if (query.length < 2) {
+        suggestionsBox.style.display = 'none';
+        return;
+    }
+    fetch("{% url 'search' %}?q=" + encodeURIComponent(query), {
+        headers: {'X-Requested-With': 'XMLHttpRequest'}
+    })
+    .then(response => response.json())
+    .then(data => {
+        suggestionsBox.innerHTML = '';
+        if (data.suggestions.length) {
+            data.suggestions.forEach(function(suggestion) {
+                const item = document.createElement('button');
+                item.type = 'button';
+                item.className = 'list-group-item list-group-item-action';
+                item.textContent = suggestion;
+                item.onclick = function() {
+                    searchInput.value = suggestion;
+                    suggestionsBox.style.display = 'none';
+                    searchInput.form.submit();
+                };
+                suggestionsBox.appendChild(item);
+            });
+            suggestionsBox.style.display = 'block';
+        } else {
+            suggestionsBox.style.display = 'none';
+        }
+    });
+});
+
+/* Close dropdown when clicking outside */
+document.addEventListener('click', function(e) {
+    if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+        suggestionsBox.style.display = 'none';
+    }
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,211 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Signup</title>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+    }
+
+    body {
+        height: 100vh;
+        background: linear-gradient(135deg, #0d0d0f, #10121a, #1a1c2b);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+    }
+
+    /* Main Container */
+    .container {
+        width: 92%;
+        max-width: 850px;
+        min-height: 530px;
+        display: flex;
+        border-radius: 18px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.06);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 0 35px rgba(0, 255, 255, 0.1);
+        animation: fadeIn 0.7s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Left Side */
+    .box-1 {
+        width: 45%;
+        background: linear-gradient(135deg, #0a0f18, #141a25);
+        padding: 40px 25px;
+        text-align: center;
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .box-1 h2 {
+        font-size: 34px;
+        margin-bottom: 20px;
+        color: #00eaff;
+        text-shadow: 0 0 12px #00eaff;
+    }
+
+    .box-1 button {
+        background: transparent;
+        border: 2px solid #00eaff;
+        padding: 12px 25px;
+        border-radius: 8px;
+        font-size: 16px;
+        color: #00eaff;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .box-1 button:hover {
+        background: #00eaff;
+        color: #000;
+        box-shadow: 0 0 12px #00eaff;
+    }
+
+    /* Signup Box */
+    .box-2 {
+        width: 55%;
+        padding: 40px;
+        text-align: center;
+    }
+
+    .box-2 h1 {
+        color: #00eaff;
+        margin-bottom: 25px;
+        text-shadow: 0 0 10px #00eaff;
+    }
+
+    .input-field {
+        width: 90%;
+        padding: 12px;
+        margin: 10px 0;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        background: rgba(255, 255, 255, 0.09);
+        color: #e0e0e0;
+        outline: none;
+        transition: 0.2s;
+    }
+
+    .input-field:focus {
+        border-color: #00eaff;
+        box-shadow: 0 0 10px #00eaff;
+    }
+
+    .signup-button {
+        width: 90%;
+        padding: 14px;
+        margin-top: 20px;
+        background: linear-gradient(90deg, #00eaff, #008cff);
+        color: black;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        cursor: pointer;
+        font-weight: bold;
+        box-shadow: 0 0 18px rgba(0, 255, 255, 0.4);
+        transition: 0.3s;
+    }
+
+    .signup-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 25px #00eaff;
+    }
+
+    /* Error Box */
+    .error-container {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: rgba(10, 10, 10, 0.6);
+        backdrop-filter: blur(6px);
+        z-index: 9999;
+    }
+
+    .error-message {
+        background: rgba(255, 255, 255, 0.12);
+        padding: 30px 40px;
+        border-radius: 12px;
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .error-message h2 {
+        color: #ff4d4d;
+        margin-bottom: 10px;
+    }
+
+    .error-button {
+        padding: 10px 25px;
+        background: #ff4d4d;
+        border: none;
+        color: white;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-top: 15px;
+    }
+
+    .error-button:hover {
+        background: #e60000;
+    }
+</style>
+</head>
+<body>
+
+{% if messages %}
+<div class="error-container">
+    <div class="error-message">
+        <h2>Error!</h2>
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+        <button class="error-button" onclick="window.location.reload()">Try Again</button>
+    </div>
+</div>
+{% endif %}
+
+<div class="container">
+    <div class="box-1">
+        <h2>Welcome!</h2>
+        <button onclick="login()">Login</button>
+    </div>
+
+    <div class="box-2">
+        <h1>Create Account</h1>
+        <form method="post">
+            {% csrf_token %}
+
+            <input type="text" name="username" class="input-field" placeholder="Username" required>
+
+            <input type="email" name="email" class="input-field" placeholder="Email" required>
+
+            <input type="password" name="password" class="input-field" placeholder="Password" required>
+
+            <button type="submit" class="signup-button">Sign Up</button>
+        </form>
+    </div>
+</div>
+
+<script>
+function login() {
+    window.location.href = "{% url 'users:login' %}";
+}
+</script>
+
+</body>
+</html>

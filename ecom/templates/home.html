@@ -1,0 +1,1351 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Home | StorQ{% endblock %}
+{% block content %}
+
+<style>
+  /* Variables */
+:root{
+  --accent:#d97706;
+  --gold:#ffd700;
+  --bg-gradient: linear-gradient(135deg,#fff9e6,#fffefb);
+  --card-radius:14px;
+  --shadow: 0 8px 22px rgba(0,0,0,0.12);
+  --glass: rgba(255,255,255,0.92);
+}
+
+/* Body background (keeps your bg image) */
+.home-bg {
+  background-image: url("{% static 'images/bg-home.jpg' %}");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* Fullscreen carousel with smooth responsive height */
+.carousel,
+.carousel-inner,
+.carousel-item {
+  width: 100%;
+  height: 80vh;
+}
+
+.carousel-img {
+  width: 100%;
+  height: 80vh;
+  object-fit: cover;
+  object-position: center;
+  filter: brightness(90%);
+}
+
+/* Captions centered and styled */
+.carousel-caption {
+  bottom: 20%;
+  text-align: center;
+}
+
+.carousel-caption h2 {
+  font-weight: 700;
+  font-size: 3rem;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+  color: white;
+}
+
+.carousel-caption p {
+  font-size: 1.3rem;
+  text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.5);
+}
+
+.carousel-caption .btn {
+  font-size: 1.2rem;
+  padding: 0.7rem 1.5rem;
+  border-radius: 2rem;
+}
+
+/* ✅ Responsive Breakpoints */
+@media (max-width: 992px) {
+  .carousel,
+  .carousel-inner,
+  .carousel-item,
+  .carousel-img {
+    height: 65vh;
+  }
+
+  .carousel-caption h2 {
+    font-size: 2.2rem;
+  }
+
+  .carousel-caption p {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .carousel,
+  .carousel-inner,
+  .carousel-item,
+  .carousel-img {
+    height: 55vh;
+  }
+
+  .carousel-caption {
+    bottom: 15%;
+  }
+
+  .carousel-caption h2 {
+    font-size: 1.8rem;
+  }
+
+  .carousel-caption p {
+    font-size: 1rem;
+  }
+
+  .carousel-caption .btn {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .carousel,
+  .carousel-inner,
+  .carousel-item,
+  .carousel-img {
+    height: 45vh;
+  }
+
+  .carousel-caption {
+    bottom: 10%;
+  }
+
+  .carousel-caption h2 {
+    font-size: 1.4rem;
+  }
+
+  .carousel-caption p {
+    display: none; /* hide subtext on very small screens */
+  }
+
+  .carousel-caption .btn {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem;
+  }
+}
+
+  /* Card Hover Effects */
+  .card-hover {
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .card-hover:hover {
+    transform: translateY(-10px) scale(1.03);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  }
+.product-card {
+    border: none !important;        /* Remove border */
+    border-radius: 15px;            /* Rounded rectangle */
+    overflow: hidden;               /* Makes image follow rounding */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);  /* Soft shadow */
+    transition: transform 0.2s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);    /* Slight hover lift */
+}
+
+.product-img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+
+/* ===== Section Title (single unified) ===== */
+.section-title {
+  text-align:center;
+  font-size: clamp(1.4rem,2.2vw,2.4rem);
+  font-weight:700;
+  color: var(--accent);
+  margin-bottom:1rem;
+  animation: bounceFade 2.5s ease-in-out infinite;
+}
+@keyframes bounceFade {
+  0%,100%{ transform: translateY(0); opacity:1; }
+  50%{ transform: translateY(-8px); opacity:.95; }
+}
+
+/* ===== Featured products grid ===== */
+.feature-grid { display:flex; flex-wrap:wrap; gap:1.25rem; justify-content:center; }
+.feature-grid .col-item { flex: 1 1 260px; display:flex; justify-content:center; }
+.feature-card { width:100%; max-width:300px; border-radius:var(--card-radius); overflow:hidden; box-shadow:var(--shadow); transition: transform .28s, box-shadow .28s; }
+.feature-card:hover { transform: translateY(-8px) scale(1.02); box-shadow:0 14px 34px rgba(0,0,0,.16); }
+.feature-card .card-img-top { height: 220px; object-fit:cover; }
+
+/* ===== Hex promo card block (keeps your clip-path shape & shimmer) ===== */
+.scroll-container { position:relative; width:100%; overflow:hidden; }
+.scroll-track { display:flex; gap:2rem; width:max-content; animation:scrollLoop 35s linear infinite; padding:1rem 0; }
+.scroll-container:hover .scroll-track { animation-play-state:paused; }
+
+@keyframes scrollLoop { from{ transform: translateX(0); } to{ transform: translateX(-50%); } }
+
+
+/* ===== Dhanteras Offers Normal Cards ===== */
+.offer-card-link,
+.offer-card-link * {
+text-decoration: none; /* remove underline */
+color: inherit;        /* keep original colors */
+}
+
+.offer-card {
+width: 280px;
+height: 340px;
+flex: 0 0 auto;
+background: white;
+border-radius: 16px;
+box-shadow: var(--shadow);
+transition: transform 0.4s ease, box-shadow 0.4s ease;
+display: flex;
+flex-direction: column;
+overflow: hidden;
+position: relative;
+}
+
+.offer-card:hover {
+transform: scale(1.05);
+box-shadow: 0 18px 36px rgba(255,187,0,0.28);
+}
+
+/* Shimmer glow */
+.offer-card.shimmer::before {
+content: "";
+position: absolute;
+top: -100%;
+left: -100%;
+width: 200%;
+height: 200%;
+background: linear-gradient(120deg, transparent, rgba(255,230,150,0.45), transparent);
+transform: rotate(25deg);
+animation: shimmer 3s infinite;
+z-index: 1;
+pointer-events: none;
+}
+
+/* Image container at the top */
+.offer-inner {
+width: 100%;
+height: 70%; /* top 70% reserved for image */
+overflow: hidden;
+}
+
+.offer-inner img {
+width: 100%;
+height: 100%;
+object-fit: cover;   /* fills container without distortion */
+transition: transform 0.4s ease, filter 0.4s ease;
+}
+
+.offer-card:hover .offer-inner img {
+transform: scale(1.05);
+filter: brightness(0.92);
+}
+
+/* Content bar at the bottom */
+.offer-content {
+width: 100%;
+height: 30%; /* remaining 30% of card */
+padding: 10px;
+text-align: center;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+background: rgba(255,255,255,0.95);
+}
+
+/* Floating animation (optional shimmer effect) */
+.float-animate {
+animation: floatUpDown 4s ease-in-out infinite;
+}
+
+@keyframes floatUpDown {
+0%, 100% { transform: translateY(0);}
+50% { transform: translateY(-5px);}
+}
+
+/* Shimmer keyframes */
+@keyframes shimmer {
+0% { transform: rotate(25deg) translate(-100%, -100%); }
+100% { transform: rotate(25deg) translate(100%, 100%); }
+}
+
+/* ===== Trending octagon thumbnails (exact clip) ===== */
+.octagon-border {
+  display:inline-block;
+  padding:6px;
+  background: linear-gradient(135deg, var(--gold), #ffcc00);
+  clip-path: polygon(
+    30% 0%, 70% 0%,
+    100% 30%, 100% 70%,
+    70% 100%, 30% 100%,
+    0% 70%, 0% 30%
+  );
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+.octagon {
+  width:100%;
+  aspect-ratio:1/1;
+  object-fit:cover;
+  display:block;
+  clip-path: inherit;
+  border-radius:10px;
+}
+
+/* ===== Categories strip (circular items) ===== */
+.categories-strip { display:flex; gap:2rem; align-items:center; overflow:hidden; padding:1rem 0; justify-content:center; flex-wrap:nowrap; }
+.categories-item { display:inline-flex; flex-direction:column; align-items:center; min-width:120px; text-decoration:none; color:inherit; }
+.categories-item img { width: 140px; height:140px; border-radius:50%; object-fit:cover; box-shadow: var(--shadow); transition: transform .22s, box-shadow .22s; }
+.categories-item:hover img { transform: scale(1.12); box-shadow: 0 14px 40px rgba(212,160,23,0.22); }
+
+/* ===== Video gallery styles ===== */
+.video-container { position:relative; overflow:hidden; border-radius:16px; box-shadow:var(--shadow); }
+.video-container video { width:100%; height:auto; display:block; border-radius:inherit; }
+.play-btn { position:absolute; bottom:12px; right:12px; width:56px; height:56px; border-radius:50%; background:rgba(0,0,0,.48); color:#fff; display:flex; align-items:center; justify-content:center; border:none; font-size:1.25rem; transition:transform .18s, background .18s; z-index:5; }
+.play-btn:hover { transform:scale(1.05); background:rgba(217,119,6,.95); }
+
+/* ===== Gender filter buttons ===== */
+.gn { display:flex; gap:.5rem; justify-content:center; flex-wrap:wrap; margin:1.5rem 0; }
+.gn .btn-filter { padding:.55rem .95rem; border-radius:999px; border:1px solid #343a40; background:#fff; color:#343a40; transition:all .18s; }
+.gn .btn-filter.active { background:#343a40; color:#fff; border-color:transparent; box-shadow:0 6px 18px rgba(0,0,0,.12); }
+
+/* ===== Small screens ===== */
+@media (max-width: 768px) {
+  .carousel-caption { bottom: 12%; }
+  .hex-card { width: 260px; height: 300px; }
+  .categories-item img { width:120px; height:120px; }
+  .feature-card .card-img-top { height:180px; }
+}
+@media (max-width: 480px) {
+  .hex-card { width: 200px; height: 250px; }
+  .feature-grid .col-item { flex-basis:100%; }
+  .categories-strip { gap:1rem; overflow-x:auto; padding-bottom:8px; }
+}
+
+/* small utility */
+.text-muted.small { font-size:.85rem; color:#6c757d; }
+
+/* ===============================
+   OUR STORES — MOBILE RESPONSIVE
+   AUTO SCROLL STRIP (Right → Left)
+   =============================== */
+
+/* Wrapper to hide overflow */
+.categories-wrapper {
+  overflow: hidden;
+  width: 100%;
+  position: relative;
+  padding: 15px 0;
+}
+
+/* The scrolling strip */
+.categories-strip {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  animation: scrollRightToLeft 18s linear infinite;
+  width: max-content;
+}
+
+/* Infinite scrolling animation */
+@keyframes scrollRightToLeft {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+/* Store item container */
+.categories-item {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Store images */
+.categories-item img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid #eee;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  transition: 0.3s ease;
+}
+
+/* Hover effect */
+.categories-item:hover img {
+  transform: scale(1.07);
+}
+
+/* Store name text */
+.categories-item span {
+  margin-top: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #444;
+}
+
+/* ===============================
+   RESPONSIVE (MOBILE)
+   =============================== */
+@media (max-width: 576px) {
+
+  .categories-strip {
+    gap: 20px;
+    animation-duration: 14s; /* faster on mobile */
+  }
+
+  .categories-item img {
+    width: 80px;
+    height: 80px;
+  }
+
+  .categories-item span {
+    font-size: 13px;
+  }
+}
+
+</style>
+
+<div class="home-bg">
+
+<!-- Carousel -->
+<div id="fullscreenCarousel" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#fullscreenCarousel" data-bs-slide-to="0" class="active"></button>
+    <button type="button" data-bs-target="#fullscreenCarousel" data-bs-slide-to="1"></button>
+    <button type="button" data-bs-target="#fullscreenCarousel" data-bs-slide-to="2"></button>
+  </div>
+
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src="{% static 'images/1cl.jpg' %}" class="d-block w-100 carousel-img" alt="Slide 1">
+      <div class="carousel-caption d-md-block">
+        <h2>BIGGEST SALE OF THE YEAR</h2>
+        <p>Exclusive Diwali Discounts on all fashion & lifestyle items!</p>
+        <a href="{% url 'collection' %}" class="btn btn-warning btn-lg">Shop Now &raquo;</a>
+      </div>
+    </div>
+
+    <div class="carousel-item">
+      <img src="{% static 'images/2cl.jpg' %}" class="d-block w-100 carousel-img" alt="Slide 2">
+      <div class="carousel-caption d-md-block">
+        <h2>Fresh Arrivals Weekly</h2>
+        <p>Stay ahead with the latest fashion trends.</p>
+        <a href="{% url 'new' %}" class="btn btn-light btn-lg">Explore New &raquo;</a>
+      </div>
+    </div>
+
+    <div class="carousel-item">
+      <img src="{% static 'images/4cl.jpg' %}" class="d-block w-100 carousel-img" alt="Slide 3">
+      <div class="carousel-caption d-md-block text-dark">
+        <h2>Free Shipping on Orders Above ₹999</h2>
+        <a href="{% url 'about' %}" class="btn btn-outline-dark btn-lg mt-2">Learn More &raquo;</a>
+      </div>
+    </div>
+  </div>
+
+  <button class="carousel-control-prev" type="button" data-bs-target="#fullscreenCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#fullscreenCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon"></span>
+  </button>
+</div>
+
+
+
+ <!-- ===== FEATURED PRODUCTS ===== -->
+<section class="py-5 container">
+  <h3 class="section-title text-center mb-4">🌟 Featured Products 🌟</h3>
+
+  <!-- GRID ROW -->
+  <div class="row g-4 justify-content-center">
+
+    <!-- CARD 1 -->
+     <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="card product-card">
+        <img src="{% static 'images/pp1.jpg' %}" class="product-img" alt="T-Shirt">
+        <div class="card-body text-center">
+          <h6 class="fw-bold">Mens Pants</h6>
+          <p class="fw-semibold">Rs.399</p>
+          <a href="{% url 'collection' %}" class="btn btn-primary">Shop Now</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 2 -->
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="card product-card">
+        <img src="{% static 'images/c4.avif' %}" class="product-img" alt="T-Shirt">
+        <div class="card-body text-center">
+          <h6 class="fw-bold">T-Shirt</h6>
+          <p class="fw-semibold">Rs.429</p>
+          <a href="{% url 'collection' %}" class="btn btn-primary">Shop Now</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 3 -->
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="card product-card">
+        <img src="{% static 'images/c11.avif' %}" class="product-img" alt="Shoes">
+        <div class="card-body text-center">
+          <h6 class="fw-bold">Shoes</h6>
+          <p class="fw-semibold">Rs.599</p>
+          <a href="{% url 'collection' %}" class="btn btn-primary">Shop Now</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 4 -->
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="card product-card">
+        <img src="{% static 'images/ct15.avif' %}" class="product-img" alt="Coat">
+        <div class="card-body text-center">
+          <h6 class="fw-bold">Coat</h6>
+          <p class="fw-semibold">Rs.799</p>
+          <a href="{% url 'collection' %}" class="btn btn-primary">Shop Now</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 5 -->
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="card product-card">
+        <img src="/static/images/c2.avif" class="product-img" alt="Dress">
+        <div class="card-body text-center">
+          <h6 class="fw-bold">Dress</h6>
+          <p class="fw-semibold">Rs.699</p>
+          <a href="{% url 'collection' %}" class="btn btn-primary">Shop Now</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 6 -->
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="card product-card">
+        <img src="/static/images/c3.avif" class="product-img" alt="Tops">
+        <div class="card-body text-center">
+          <h6 class="fw-bold">Tops</h6>
+          <p class="fw-semibold">Rs.521</p>
+          <a href="{% url 'collection' %}" class="btn btn-primary">Shop Now</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 7 -->
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="card product-card">
+        <img src="/static/images/c14.avif" class="product-img" alt="Caps">
+        <div class="card-body text-center">
+          <h6 class="fw-bold">Caps</h6>
+          <p class="fw-semibold">Rs.158</p>
+          <a href="{% url 'collection' %}" class="btn btn-primary">Shop Now</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 8 -->
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="card product-card">
+        <img src="/static/images/c12.avif" class="product-img" alt="Kids Wear">
+        <div class="card-body text-center">
+          <h6 class="fw-bold">Kids Wear</h6>
+          <p class="fw-semibold">Rs.629</p>
+          <a href="{% url 'collection' %}" class="btn btn-primary">Shop Now</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!--====Home & Lifestyle====-->
+<section class="py-5 container">
+  <h3 class="section-title mb-4 text-center">🔥 Explore our latest home & lifestyle picks 🔥</h3>
+
+  <div class="row g-3 justify-content-center">
+
+    <!-- First row: 3 items -->
+    <div class="col-12 col-sm-6 col-md-4">
+      <a href="{% url 'collection' %}" class="d-block overflow-hidden rounded-3">
+        <div class="img-wrapper">
+          <img src="{% static 'images/hm9.webp' %}" class="img-fluid" alt="Home Item 1">
+        </div>
+      </a>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-4">
+      <a href="{% url 'collection' %}" class="d-block overflow-hidden rounded-3">
+        <div class="img-wrapper">
+          <img src="{% static 'images/hm7.webp' %}" class="img-fluid" alt="Home Item 2">
+        </div>
+      </a>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-4">
+      <a href="{% url 'collection' %}" class="d-block overflow-hidden rounded-3">
+        <div class="img-wrapper">
+          <img src="{% static 'images/hm6.webp' %}" class="img-fluid" alt="Home Item 3">
+        </div>
+      </a>
+    </div>
+
+  </div>
+
+  <style>
+    .img-wrapper {
+      width: 100%;
+      aspect-ratio: 4 / 3; /* keeps uniform height */
+      overflow: hidden;
+    }
+
+    .img-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  </style>
+<br>
+
+  <div id="more-picks-row" style="display:flex; justify-content:center; gap:20px; flex-wrap:wrap; align-items:flex-start;">
+
+    <!-- First Image -->
+    <div class="pick-box" style="height:400px; width:410px; overflow:hidden; border-radius:12px; flex-shrink:0;">
+      <a href="{% url 'collection' %}" style="display:block; width:100%; height:100%;">
+        <img src="{% static 'images/hm2.webp' %}" alt="Home Item 4"
+             style="width:100%; height:100%; object-fit:cover;">
+      </a>
+    </div>
+
+    <!-- Second Image -->
+    <div class="pick-box" style="height:400px; width:860px; overflow:hidden; border-radius:12px; flex-shrink:0;">
+      <a href="{% url 'collection' %}" style="display:block; width:100%; height:100%;">
+        <img src="{% static 'images/hm1.webp' %}" alt="Home Item 5"
+             style="width:100%; height:100%; object-fit:cover;">
+      </a>
+    </div>
+
+  </div>
+
+  <!-- RESPONSIVE INLINE CSS -->
+  <style>
+    @media(max-width: 992px) {
+      /* Tablet: reduce width but keep ratio */
+      .pick-box {
+        width: 90% !important;
+        height: 380px !important;
+      }
+    }
+
+    @media(max-width: 768px) {
+      /* Mobile: full width stacked */
+      #more-picks-row {
+        flex-direction: column;
+        align-items: center;
+      }
+      .pick-box {
+        width: 100% !important;
+        height: 350px !important;
+      }
+    }
+
+    @media(max-width: 480px) {
+      /* Small mobile */
+      .pick-box {
+        height: 300px !important;
+      }
+    }
+  </style>
+
+</section>
+
+
+<br>
+
+<br>
+<!-- SECTION 1 -->
+ <h2 
+  style="
+    text-align:center;
+    font-size:32px;
+    font-weight:700;
+    margin-bottom:25px;
+    margin-top:10px;
+    font-family:Arial, sans-serif;
+    letter-spacing:1px;
+    color:#222;
+  "
+>
+  Featured Collections
+</h2>
+
+<div style="width:100%; max-width:1200px; margin:auto; padding:12px; box-sizing:border-box;">
+
+  <div style="
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      justify-content:center;
+  ">
+
+    <!-- IMAGE 1 -->
+    <div style="
+        flex:1 1 220px;        /* grow, shrink, base width */
+        min-width:200px;       /* ensures mobile scaling */
+        max-width:290px;
+        aspect-ratio:1/1;      /* forces square box */
+        overflow:hidden;
+        border-radius:12px;
+        position:relative;
+    ">
+      <a href="{% url 'collection' %}" 
+         style="display:block; width:100%; height:100%;">
+        <img loading="lazy"
+             src="{% static 'images/hm10.webp' %}" 
+             alt="Image 1"
+             style="
+                width:100%;
+                height:100%;
+                object-fit:cover;
+                display:block;
+             ">
+      </a>
+    </div>
+
+    <!-- IMAGE 2 -->
+    <div style="flex:1 1 220px; min-width:200px; max-width:290px; aspect-ratio:1/1; overflow:hidden; border-radius:12px; position:relative;">
+      <a href="{% url 'collection' %}">
+        <img loading="lazy"
+             src="{% static 'images/hm11.webp' %}" 
+             alt="Image 2"
+             style="width:100%; height:100%; object-fit:cover; display:block;">
+      </a>
+    </div>
+
+    <!-- IMAGE 3 -->
+    <div style="flex:1 1 220px; min-width:200px; max-width:290px; aspect-ratio:1/1; overflow:hidden; border-radius:12px; position:relative;">
+      <a href="{% url 'collection' %}">
+        <img loading="lazy"
+              src="{% static 'images/hm12.webp' %}" 
+             alt="Image 3"
+             style="width:100%; height:100%; object-fit:cover; display:block;">
+      </a>
+    </div>
+
+    <!-- IMAGE 4 -->
+    <div style="flex:1 1 220px; min-width:200px; max-width:290px; aspect-ratio:1/1; overflow:hidden; border-radius:12px; position:relative;">
+      <a href="{% url 'collection' %}">
+        <img loading="lazy"
+              src="{% static 'images/hm13.webp' %}" 
+             alt="Image 4"
+             style="width:100%; height:100%; object-fit:cover; display:block;">
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<!-- SECTION 2 -->
+<div style="width:100%; max-width:1200px; margin:auto; padding:12px; box-sizing:border-box;">
+
+  <div style="
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      justify-content:center;
+  ">
+
+    <!-- IMAGE 1 -->
+    <div style="flex:1 1 220px; min-width:200px; max-width:290px; aspect-ratio:1/1; overflow:hidden; border-radius:12px; position:relative;">
+      <a href="{% url 'collection' %}">
+        <img loading="lazy"
+              src="{% static 'images/hm14.webp' %}" 
+             alt="Image 1"
+             style="width:100%; height:100%; object-fit:cover; display:block;">
+      </a>
+    </div>
+
+    <!-- IMAGE 2 -->
+    <div style="flex:1 1 220px; min-width:200px; max-width:290px; aspect-ratio:1/1; overflow:hidden; border-radius:12px; position:relative;">
+      <a href="{% url 'collection' %}">
+        <img loading="lazy"
+            src="{% static 'images/hm15.webp' %}" 
+             alt="Image 2"
+             style="width:100%; height:100%; object-fit:cover; display:block;">
+      </a>
+    </div>
+
+    <!-- IMAGE 3 -->
+    <div style="flex:1 1 220px; min-width:200px; max-width:290px; aspect-ratio:1/1; overflow:hidden; border-radius:12px; position:relative;">
+      <a href="{% url 'collection' %}">
+        <img loading="lazy"
+              src="{% static 'images/hm16.webp' %}" 
+             alt="Image 3"
+             style="width:100%; height:100%; object-fit:cover; display:block;">
+      </a>
+    </div>
+
+    <!-- IMAGE 4 -->
+    <div style="flex:1 1 220px; min-width:200px; max-width:290px; aspect-ratio:1/1; overflow:hidden; border-radius:12px; position:relative;">
+      <a href="{% url 'collection' %}">
+        <img loading="lazy"
+              src="{% static 'images/hm18.webp' %}" 
+             alt="Image 3"
+             style="width:100%; height:100%; object-fit:cover; display:block;">
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<section class="py-5 container" style="text-align:center;">
+
+  <h3 style="margin-bottom:25px; font-size:26px; font-weight:600;">
+    ✨ Trending Offers ✨
+  </h3>
+
+  <!-- GRID -->
+  <div class="deal-grid"
+       style="
+         display:grid;
+         grid-template-columns:repeat(2,1fr);
+         gap:18px;
+         padding:15px;
+       "
+  >
+
+    <!-- CARD 1: DRESSES -->
+    <div
+      style="
+        position:relative;
+        height:350px;
+        overflow:hidden;
+        border-radius:14px;
+        background:linear-gradient(135deg,#ffe9c3,#fff3e6);
+        padding:20px;
+      "
+    >
+      <span
+        style="
+          position:absolute; top:12px; left:12px;
+          background:#e11d48; color:white;
+          padding:5px 12px; font-size:12px;
+          border-radius:8px; font-weight:bold;
+          animation:spin 3s linear infinite;
+          display:inline-block;
+        "
+      >DRESSES</span>
+
+      <h3 style="font-size:22px; margin-top:25px; color:#333; font-weight:600;">
+        Dresses
+      </h3>
+
+      <p style="font-size:20px; margin-top:10px; color:#d97706; font-weight:bold;">
+        ₹799 <span style="font-size:14px; color:#666; text-decoration:line-through; margin-left:6px;">₹1599</span>
+      </p>
+
+      <p style="font-size:14px; margin-top:8px; color:#b30000;">
+        Ends in: 03:15:40
+      </p>
+
+      <!-- SHOP NOW LINK -->
+      <a href="{% url 'collection' %}">
+        <button
+          style="
+            margin-top:25px;
+            padding:10px 20px;
+            background:#d97706;
+            border:none;
+            color:white;
+            border-radius:8px;
+            cursor:pointer;
+            font-size:15px;
+            animation:jump 1.8s infinite ease-in-out;
+          "
+        >Shop Now</button>
+      </a>
+    </div>
+
+    <!-- CARD 2: HOME DECOR -->
+    <div
+      style="
+        position:relative;
+        height:350px;
+        overflow:hidden;
+        border-radius:14px;
+        background:linear-gradient(135deg,#ffe9c3,#fff3e6);
+        padding:20px;
+      "
+    >
+      <span
+        style="
+          position:absolute; top:12px; left:12px;
+          background:#16a34a; color:white;
+          padding:5px 12px; font-size:12px;
+          border-radius:8px; font-weight:bold;
+          animation:spin 3s linear infinite;
+          display:inline-block;
+        "
+      >HOME DECOR</span>
+
+      <h3 style="font-size:22px; margin-top:25px; color:#333; font-weight:600;">
+        Lamps & Wall Art
+      </h3>
+
+      <p style="font-size:20px; margin-top:10px; color:#d97706; font-weight:bold;">
+        ₹499 <span style="font-size:14px; color:#666; text-decoration:line-through; margin-left:6px;">₹1299</span>
+      </p>
+
+      <p style="font-size:14px; margin-top:8px; color:#b30000;">
+        Ends in: 01:58:21
+      </p>
+
+      <!-- SHOP NOW LINK -->
+      <a href="{% url 'collection' %}">
+        <button
+          style="
+            margin-top:25px;
+            padding:10px 20px;
+            background:#16a34a;
+            border:none;
+            color:white;
+            border-radius:8px;
+            cursor:pointer;
+            font-size:15px;
+            animation:jump 1.8s infinite ease-in-out;
+          "
+        >Shop Now</button>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- MEDIA QUERIES + ANIMATIONS -->
+<style>
+/* Responsive grid */
+@media (max-width: 992px) {
+  .deal-grid {
+    grid-template-columns: repeat(2,1fr) !important;
+  }
+}
+@media (max-width: 576px) {
+  .deal-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Animations */
+@keyframes jump {
+  0% { transform:translateY(0); }
+  50% { transform:translateY(-12px); }
+  100% { transform:translateY(0); }
+}
+
+@keyframes spin {
+  from { transform:rotate(0deg); }
+  to { transform:rotate(360deg); }
+}
+</style>
+
+
+
+
+<br>
+
+
+  <!-- ===== DHANTERAS OFFERS (HEX CARDS) ===== -->
+  <section class="py-5" style="background:var(--bg-gradient);">
+   
+  <div class="container">
+    <h3 class="section-title" style="color:var(--accent)">✨ Auspicious Dhanteras Offers ✨</h3>
+
+
+<div class="scroll-container" aria-label="Trending offers" role="region">
+  <div class="scroll-track" id="hexTrack">
+
+    <!-- Silver Jewellery -->
+    <a href="{% url 'collection' %}" class="offer-card-link">
+      <div class="offer-card shimmer float-animate" data-aos="zoom-in">
+        <div class="offer-inner">
+          <img src="{% static 'images/c22.avif' %}" alt="Silver Jewellery" loading="lazy">
+        </div>
+        <div class="offer-content">
+          <h6 class="fw-bold mb-1">Silver Jewellery</h6>
+          <p class="text-danger mb-0">Up to 30% Off</p>
+        </div>
+      </div>
+    </a>
+
+    <!-- Platinum Jewellery -->
+    <a href="{% url 'collection' %}" class="offer-card-link">
+      <div class="offer-card shimmer float-animate" data-aos="zoom-in" data-aos-delay="100">
+        <div class="offer-inner">
+          <img src="{% static 'images/pla1.webp' %}" alt="Platinum Jewellery" loading="lazy">
+        </div>
+        <div class="offer-content">
+          <h6 class="fw-bold mb-1">Platinum Jewellery</h6>
+          <p class="text-danger mb-0">Flat 25% Off</p>
+        </div>
+      </div>
+    </a>
+
+    <!-- Diamond Jewellery -->
+    <a href="{% url 'collection' %}" class="offer-card-link">
+      <div class="offer-card shimmer float-animate" data-aos="zoom-in">
+        <div class="offer-inner">
+          <img src="{% static 'images/daim1.jpeg' %}" alt="Diamond Jewellery" loading="lazy">
+        </div>
+        <div class="offer-content">
+          <h6 class="fw-bold mb-1">Diamond Jewellery</h6>
+          <p class="text-danger mb-0">Up to 40% Off</p>
+        </div>
+      </div>
+    </a>
+
+    <!-- Gold Jewellery -->
+    <a href="{% url 'collection' %}" class="offer-card-link">
+      <div class="offer-card shimmer float-animate" data-aos="zoom-in" data-aos-delay="100">
+        <div class="offer-inner">
+          <img src="{% static 'images/gol6.png' %}" alt="Gold Jewellery" loading="lazy">
+        </div>
+        <div class="offer-content">
+          <h6 class="fw-bold mb-1">Gold Jewellery</h6>
+          <p class="text-danger mb-0">Up to 35% Off</p>
+        </div>
+      </div>
+    </a>
+    <!-- Repeat cards if needed for scrolling -->
+             <!-- Silver Jewellery -->
+    <a href="{% url 'collection' %}" class="offer-card-link">
+      <div class="offer-card shimmer float-animate" data-aos="zoom-in">
+        <div class="offer-inner">
+          <img src="{% static 'images/c22.avif' %}" alt="Silver Jewellery" loading="lazy">
+        </div>
+        <div class="offer-content">
+          <h6 class="fw-bold mb-1">Silver Jewellery</h6>
+          <p class="text-danger mb-0">Up to 30% Off</p>
+        </div>
+      </div>
+    </a>
+
+    <!-- Platinum Jewellery -->
+    <a href="{% url 'collection' %}" class="offer-card-link">
+      <div class="offer-card shimmer float-animate" data-aos="zoom-in" data-aos-delay="100">
+        <div class="offer-inner">
+          <img src="{% static 'images/pla1.webp' %}" alt="Platinum Jewellery" loading="lazy">
+        </div>
+        <div class="offer-content">
+          <h6 class="fw-bold mb-1">Platinum Jewellery</h6>
+          <p class="text-danger mb-0">Flat 25% Off</p>
+        </div>
+      </div>
+    </a>
+
+    <!-- Diamond Jewellery -->
+    <a href="{% url 'collection' %}" class="offer-card-link">
+      <div class="offer-card shimmer float-animate" data-aos="zoom-in">
+        <div class="offer-inner">
+          <img src="{% static 'images/daim1.jpeg' %}" alt="Diamond Jewellery" loading="lazy">
+        </div>
+        <div class="offer-content">
+          <h6 class="fw-bold mb-1">Diamond Jewellery</h6>
+          <p class="text-danger mb-0">Up to 40% Off</p>
+        </div>
+      </div>
+    </a>
+
+    <!-- Gold Jewellery -->
+    <a href="{% url 'collection' %}" class="offer-card-link">
+      <div class="offer-card shimmer float-animate" data-aos="zoom-in" data-aos-delay="100">
+        <div class="offer-inner">
+          <img src="{% static 'images/gol6.png' %}" alt="Gold Jewellery" loading="lazy">
+        </div>
+        <div class="offer-content">
+          <h6 class="fw-bold mb-1">Gold Jewellery</h6>
+          <p class="text-danger mb-0">Up to 35% Off</p>
+        </div>
+      </div>
+    </a>
+   
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TRENDING NOW (OCTAGON) ===== -->
+  <section class="py-5">
+    <div class="container text-center">
+      <h3 class="section-title mb-4">🔥 Trending Now 🔥</h3>
+
+      <div class="row justify-content-center g-3">
+        <div class="col-6 col-sm-4 col-md-3" data-aos="flip-left">
+          <a href="{% url 'collection' %}" class="d-block">
+            <div class="octagon-border">
+              <img src="{% static 'images/c18.avif' %}" class="img-fluid octagon" alt="Trending1" loading="lazy">
+            </div>
+          </a>
+        </div>
+
+        <div class="col-6 col-sm-4 col-md-3" data-aos="flip-left" data-aos-delay="120">
+          <a href="{% url 'collection' %}" class="d-block">
+            <div class="octagon-border">
+              <img src="{% static 'images/c19.avif' %}" class="img-fluid octagon" alt="Trending2" loading="lazy">
+            </div>
+          </a>
+        </div>
+      <div class="col-6 col-sm-4 col-md-3" data-aos="flip-left" data-aos-delay="120">
+          <a href="{% url 'collection' %}" class="d-block">
+            <div class="octagon-border">
+              <img src="{% static 'images/skt4.jpg' %}" class="img-fluid octagon" alt="Trending2" loading="lazy">
+            </div>
+          </a>
+        </div>
+        <div class="col-6 col-sm-4 col-md-3" data-aos="flip-left" data-aos-delay="240">
+          <a href="{% url 'collection' %}" class="d-block">
+            <div class="octagon-border">
+              <img src="{% static 'images/c20.avif' %}" class="img-fluid octagon" alt="Trending3" loading="lazy">
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+ <!-- ===== CATEGORIES STRIP (SCROLLING) ===== -->
+<section class="py-4" style="background:#fff;">
+  <div class="container text-center">
+    <h3 class="section-title slide-lr">🌟 Our Stores 🌟</h3>
+
+    <div class="categories-strip-wrapper" style="overflow-x:auto; scroll-behavior:smooth; -webkit-overflow-scrolling:touch;">
+      <div class="categories-strip" style="display:flex; gap:20px; padding:10px 0;">
+
+        <!-- Kids -->
+        <a class="categories-item" href="{% url 'collection' %}?category=kids" style="flex:0 0 auto; text-align:center;">
+          <img src="{% static 'images/k1.avif' %}" alt="Kids" style="width:80px; height:80px; object-fit:cover; border-radius:50%;">
+          <h6 class="mt-2">Kids</h6>
+        </a>
+
+        <!-- Bags -->
+        <a class="categories-item" href="{% url 'collection' %}?category=bags" style="flex:0 0 auto; text-align:center;">
+          <img src="{% static 'images/b2.avif' %}" alt="Bags" style="width:80px; height:80px; object-fit:cover; border-radius:50%;">
+          <h6 class="mt-2">Bags</h6>
+        </a>
+
+        <!-- Shoes -->
+        <a class="categories-item" href="{% url 'collection' %}?category=footwears" style="flex:0 0 auto; text-align:center;">
+          <img src="{% static 'images/f1.avif' %}" alt="Shoes" style="width:80px; height:80px; object-fit:cover; border-radius:50%;">
+          <h6 class="mt-2">Shoes</h6>
+        </a>
+
+        <!-- Men -->
+        <a class="categories-item" href="{% url 'collection' %}?choices=men" style="flex:0 0 auto; text-align:center;">
+          <img src="{% static 'images/m1.avif' %}" alt="Men" style="width:80px; height:80px; object-fit:cover; border-radius:50%;">
+          <h6 class="mt-2">Men</h6>
+        </a>
+
+        <!-- Home Decor -->
+        <a class="categories-item" href="{% url 'collection' %}?category=homedecors" style="flex:0 0 auto; text-align:center;">
+          <img src="{% static 'images/h1.avif' %}" alt="Home Decor" style="width:80px; height:80px; object-fit:cover; border-radius:50%;">
+          <h6 class="mt-2">Home Decor</h6>
+        </a>
+
+        <!-- Jewellery -->
+        <a class="categories-item" href="{% url 'collection' %}?category=jewellery" style="flex:0 0 auto; text-align:center;">
+          <img src="{% static 'images/g1.avif' %}" alt="Jewellery" style="width:80px; height:80px; object-fit:cover; border-radius:50%;">
+          <h6 class="mt-2">Jewellery</h6>
+        </a>
+
+        <!-- Toys -->
+        <a class="categories-item" href="{% url 'collection' %}?category=toys" style="flex:0 0 auto; text-align:center;">
+          <img src="{% static 'images/ty1.avif' %}" alt="Toys" style="width:80px; height:80px; object-fit:cover; border-radius:50%;">
+          <h6 class="mt-2">Toys</h6>
+        </a>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- OPTIONAL CSS for scrollbar styling -->
+<style>
+.categories-strip-wrapper::-webkit-scrollbar {
+  height:6px;
+}
+.categories-strip-wrapper::-webkit-scrollbar-thumb {
+  background: #d97706;
+  border-radius: 3px;
+}
+.categories-strip-wrapper::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+</style>
+
+
+  <!-- ===== WHY CHOOSE US ===== -->
+  <section class="py-5 bg-light">
+    <div class="container text-center">
+      <h3 class="section-title">Why Choose <span style="color:black;">Stor<span style="color:red;">Q</span>?</h3>
+      <div class="row justify-content-center g-4">
+        <div class="col-6 col-md-3" data-aos="fade-up">
+          <div><i class="feature-icon bi bi-truck" style="font-size:2rem;color:var(--gold)"></i>
+            <h6 class="fw-bold mt-2">Fast Delivery</h6>
+            <p class="text-muted small">Get your products delivered lightning fast across India.</p>
+          </div>
+        </div>
+        <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="120">
+          <div><i class="feature-icon bi bi-shield-check" style="font-size:2rem;color:var(--gold)"></i>
+            <h6 class="fw-bold mt-2">Quality Assurance</h6>
+            <p class="text-muted small">Only verified and high-quality products make it to your cart.</p>
+          </div>
+        </div>
+        <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="240">
+          <div><i class="feature-icon bi bi-cash-coin" style="font-size:2rem;color:var(--gold)"></i>
+            <h6 class="fw-bold mt-2">Affordable Prices</h6>
+            <p class="text-muted small">Exclusive discounts and festive offers every month.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== VIDEO GALLERY ===== -->
+  <section class="py-5" style="background:linear-gradient(120deg,#fff8e1,#fff);">
+    <div class="container text-center">
+      <h3 class="section-title">🎥 Our Video Gallery</h3>
+      <p class="text-muted mb-4">Watch our latest fashion lookbooks, brand stories and behind-the-scenes.</p>
+
+      <div class="row g-4 justify-content-center">
+        <div class="col-md-4 col-sm-6" data-aos="flip-up">
+          <div class="video-container">
+            <video muted autoplay loop playsinline preload="metadata" poster="{% static 'images/video1-thumbnail.jpg' %}">
+              <source src="{% static 'videos/vecteezy_3d-animation-mobile-phone-or-smartphone-with-store-front_10185687.mov' %}" type="video/mp4">
+            </video>
+            <button class="play-btn" aria-label="Toggle video"><i class="bi bi-pause-fill"></i></button>
+          </div>
+          <h6 class="fw-bold mt-3">New Season Lookbook</h6>
+        </div>
+
+        <div class="col-md-4 col-sm-6" data-aos="flip-up" data-aos-delay="120">
+          <div class="video-container">
+            <video muted autoplay loop playsinline preload="metadata" poster="{% static 'images/video2-thumbnail.jpg' %}">
+              <source src="{% static 'videos/vecteezy_online-shopping-and-purchasing-animation-with-colorful_8710627 (1).mp4' %}" type="video/mp4">
+            </video>
+            <button class="play-btn" aria-label="Toggle video"><i class="bi bi-pause-fill"></i></button>
+          </div>
+          <h6 class="fw-bold mt-3">Behind the Scenes</h6>
+        </div>
+
+        <div class="col-md-4 col-sm-6" data-aos="flip-up" data-aos-delay="240">
+          <div class="video-container">
+            <video muted autoplay loop playsinline preload="metadata" poster="{% static 'images/video3-thumbnail.jpg' %}">
+              <source src="{% static 'videos/VID-20251109-WA0026.mp4' %}" type="video/mp4">
+            </video>
+            <button class="play-btn" aria-label="Toggle video"><i class="bi bi-pause-fill"></i></button>
+          </div>
+          <h6 class="fw-bold mt-3">Festival Collection</h6>
+        </div>
+      </div>
+    </div>
+  </section>
+
+ <div class="text-center mb-4">
+  <a href="{% url 'collection' %}?gender=men"
+     class="btn mx-1"
+     style="transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s, color 0.3s;
+            display:inline-block;
+            {% if selected_gender == 'men' %}background-color:#343a40;color:white;{% else %}background-color:white;color:#343a40;border:1px solid #343a40;{% endif %}">
+     Men
+  </a>
+  <a href="{% url 'collection' %}?gender=women"
+     class="btn mx-1"
+     style="transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s, color 0.3s;
+            display:inline-block;
+            {% if selected_gender == 'women' %}background-color:#343a40;color:white;{% else %}background-color:white;color:#343a40;border:1px solid #343a40;{% endif %}">
+     Women
+  </a>
+  <a href="{% url 'collection' %}?gender=kids"
+     class="btn mx-1"
+     style="transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s, color 0.3s;
+            display:inline-block;
+            {% if selected_gender == 'kids' %}background-color:#343a40;color:white;{% else %}background-color:white;color:#343a40;border:1px solid #343a40;{% endif %}">
+     Kids
+  </a>
+   <a href="{% url 'collection' %}?gender=access"
+     class="btn mx-1"
+     style="transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s, color 0.3s;
+            display:inline-block;
+            {% if selected_gender == 'access' %}background-color:#343a40;color:white;{% else %}background-color:white;color:#343a40;border:1px solid #343a40;{% endif %}">
+    Accessories
+  </a>
+  <a href="{% url 'collection' %}"
+     class="btn mx-1"
+     style="transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s, color 0.3s;
+            display:inline-block;
+            {% if not selected_gender %}background-color:#343a40;color:white;{% else %}background-color:white;color:#343a40;border:1px solid #343a40;{% endif %}">
+     All
+  </a>
+</div>
+</div> <!-- end home-bg -->
+
+<!-- AOS JS -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+<!-- ===== Small JS for interactions ===== -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Init AOS
+    if (window.AOS) AOS.init({ duration: 700, once: true, offset: 120 });
+
+    // Pause carousel on hover (better desktop UX)
+    const carouselEl = document.getElementById('fullscreenCarousel');
+    if (carouselEl && window.bootstrap?.Carousel) {
+      const carouselInstance = bootstrap.Carousel.getInstance(carouselEl) || new bootstrap.Carousel(carouselEl);
+      carouselEl.addEventListener('mouseenter', ()=> carouselInstance.pause());
+      carouselEl.addEventListener('mouseleave', ()=> carouselInstance.cycle());
+    }
+
+    // Video play/pause toggle buttons
+    document.querySelectorAll('.video-container').forEach(container => {
+      const video = container.querySelector('video');
+      const btn = container.querySelector('.play-btn');
+      // set icon based on state
+      const setIcon = () => btn.innerHTML = video.paused ? '<i class="bi bi-play-fill"></i>' : '<i class="bi bi-pause-fill"></i>';
+      setIcon();
+      btn.addEventListener('click', function(e){
+        e.stopPropagation();
+        if (video.paused) video.play(); else video.pause();
+        setIcon();
+      });
+      container.addEventListener('click', function(e){
+        if (e.target === btn) return;
+        if (video.paused) video.play(); else video.pause();
+        setIcon();
+      });
+    });
+
+    // Pause hex scroll on hover (already paused by CSS but adding safety)
+    const track = document.getElementById('hexTrack');
+    if (track) {
+      track.parentElement.addEventListener('mouseenter', ()=> track.style.animationPlayState = 'paused');
+      track.parentElement.addEventListener('mouseleave', ()=> track.style.animationPlayState = 'running');
+    }
+  });
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,468 @@
+{% extends "base.html" %}
+{% load static %}
+{% load collection_extras %}
+
+{% block title %}Collections | StorQ{% endblock %}
+
+{% block content %}
+
+<style>
+/* -----------------------------
+    GENERAL PAGE STYLING
+----------------------------- */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #fdfaf6;
+}
+
+h2, h5 {
+    font-weight: 700;
+}
+
+/* -----------------------------
+    FILTER SIDEBAR
+----------------------------- */
+.sidebar-filter {
+    max-height: 600px;           /* max height */
+    overflow-y: auto;          /* scroll if needed */
+    padding: 1rem;             /* reduced padding */
+    background: linear-gradient(135deg, #dbeafe, #93c5fd);
+    border-radius: 15px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.sidebar-filter .mb-4 {
+    margin-bottom: 1rem;
+}
+
+.sidebar-filter .form-label {
+    margin-bottom: 0.3rem;
+    font-size: 0.9rem;
+}
+
+.filter-header {
+    font-size: 1.1rem;
+    font-weight: 700;
+    padding: 0.5rem 0;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+/* -----------------------------
+    UNIFORM CARD DESIGN
+----------------------------- */
+.card {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    width: 90%;                    
+    margin: 0 auto;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Full image visibility */
+.card-img-top {
+    width: 100%;
+    height: auto;
+    object-fit: contain; 
+    background-color: #f0f0f0;
+}
+
+/* Equalize card body height */
+.card-body {
+    min-height: 160px;
+    text-align: center;
+    padding: 1rem 0.8rem;
+}
+
+/* Text styling */
+.card-title {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.card-text {
+    color: #6c757d;
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+}
+
+/* Button style */
+.btn {
+    border-radius: 25px;
+    font-size: 0.9rem;
+    padding: 6px 16px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+/* -----------------------------
+    RESPONSIVE ADJUSTMENTS
+----------------------------- */
+@media (max-width: 992px) {
+    .sidebar-filter {
+        max-height: none;       /* allow full height on tablets */
+        margin-bottom: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .card {
+        width: 100%;             
+    }
+    .card-img-top {
+        height: auto;           
+    }
+    .card-body {
+        min-height: auto;
+        padding: 0.8rem 0.5rem;
+    }
+    .row.g-4 {
+        gap: 1rem;
+    }
+    aside.col-lg-3 {
+        order: 2; /* move sidebar below content on mobile */
+    }
+    main.col-lg-9 {
+        order: 1;
+    }
+    .text-center.mb-4 .btn {
+        display: block;
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 576px) {
+    .filter-header {
+        font-size: 1rem;
+    }
+    .form-label {
+        font-size: 0.85rem;
+    }
+    .btn {
+        font-size: 0.85rem;
+        padding: 5px 12px;
+    }
+}
+</style>
+
+<div class="container my-5">
+    <div class="row">
+        <aside class="col-lg-3 mb-4">
+            <div class="card mb-4 sidebar-filter">
+                <div class="card-header filter-header">
+                    <strong>Filter & Sort</strong>
+                </div>
+                <div class="card-body">
+                    <form method="get">
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Choices</label>
+                            {% for value, label in filter.form.gender.field.choices %}
+                                {% if value %}
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="gender" id="gender-{{ value }}" value="{{ value }}"
+                                        {% if value == filter.form.gender.value %}checked{% endif %}>
+                                    <label class="form-check-label" for="gender-{{ value }}">{{ label }}</label>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="category" class="form-label fw-bold">Category</label>
+                            <select name="category" id="category" class="form-select">
+                                <option value="">All Categories</option>
+                                {% for value, label in filter.form.category.field.choices %}
+                                    {% if value %}
+                                    <option value="{{ value }}" {% if filter.form.category.value == value %}selected{% endif %}>{{ label }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Price Range:</label>
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>₹<span id="min_price_val">{{ filter.form.min_price.value|default:0 }}</span></span>
+                                <span>₹<span id="max_price_val">{{ filter.form.max_price.value|default:5000 }}</span></span>
+                            </div>
+                            <input type="range" id="min_price" name="min_price" min="0" max="5000" step="50" value="{{ filter.form.min_price.value|default:0 }}" class="form-range" oninput="document.getElementById('min_price_val').textContent = this.value">
+                            <input type="range" id="max_price" name="max_price" min="0" max="5000" step="50" value="{{ filter.form.max_price.value|default:5000 }}" class="form-range" oninput="document.getElementById('max_price_val').textContent = this.value">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 mb-2">Apply Filters</button>
+                        <button type="button" id="reset-filters" class="btn btn-primary w-100">Reset Filters</button>
+                    </form>
+                </div>
+            </div>
+        </aside>
+
+        <main class="col-lg-9">
+            {% if filter_active %}
+                <div class="row g-4 mb-5">
+                    {% for product in products %}
+                    <div class="col-md-4">
+                        <div class="card h-100">
+                            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ product.name }}</h5>
+                                <p class="card-text">₹{{ product.price }}</p>
+                                <a href="{% url 'product_detail' category=product.category slug=product.slug %}" class="btn btn-outline-primary btn-sm">Shop Now</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12 text-muted">No products found matching your criteria.</div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <section class="mb-5">
+                    <h2 class="mb-4">Men's Collections</h2>
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="card h-100">
+                                <img src="{% static 'images/men1.jpg' %}" class="card-img-top" alt="Men's Shirt">
+                                <div class="card-body">
+                                    <h5 class="card-title">Shirts</h5>
+                                    <p class="card-text">Classic and modern shirts for every occasion.</p>
+                                    <a href="{% url 'product_list' category='shirts' %}" class="btn btn-outline-primary btn-sm">Shop Shirts</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card h-100">
+                                <img src="{% static 'images/pp1.jpg' %}" class="card-img-top" alt="Men's Pants">
+                                <div class="card-body">
+                                    <h5 class="card-title">Pants</h5>
+                                    <p class="card-text">Comfortable and stylish pants for men.</p>
+                                    <a href="{% url 'product_list' category='pants' %}" class="btn btn-outline-primary btn-sm">Shop Pants</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card h-100">
+                                <img src="{% static 'images/ct15.avif' %}" class="card-img-top" alt="Men's Coats">
+                                <div class="card-body">
+                                    <h5 class="card-title">Coats</h5>
+                                    <p class="card-text">Stay warm and trendy with our coats.</p>
+                                    <a href="{% url 'product_list' category='coats' %}" class="btn btn-outline-primary btn-sm">Shop Coats</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <hr>
+                <section class="mb-5">
+                    <h2 class="mb-4">Women's Collections</h2>
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="card h-100">
+                                <img src="{% static 'images/wmn1.jpg' %}" class="card-img-top" alt="Women's Dresses">
+                                <div class="card-body">
+                                    <h5 class="card-title">Dresses</h5>
+                                    <p class="card-text">Elegant dresses for every style and season.</p>
+                                    <a href="{% url 'product_list' category='dresses' %}" class="btn btn-outline-primary btn-sm">Shop Dresses</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card h-100">
+                                <img src="{% static 'images/sk10.avif' %}" class="card-img-top" alt="Women's Skirts">
+                                <div class="card-body">
+                                    <h5 class="card-title">Skirts</h5>
+                                    <p class="card-text">Trendy skirts for casual and formal looks.</p>
+                                    <a href="{% url 'product_list' category='skirts' %}" class="btn btn-outline-primary btn-sm">Shop Skirts</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card h-100">
+                                <img src="{% static 'images/wmn2.jpeg' %}" class="card-img-top" alt="Women's Tops">
+                                <div class="card-body">
+                                    <h5 class="card-title">Tops</h5>
+                                    <p class="card-text">Versatile tops for every day and occasion.</p>
+                                    <a href="{% url 'product_list' category='tops' %}" class="btn btn-outline-primary btn-sm">Shop Tops</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <hr>
+                <section class="mb-5">
+                    <h2 class="mb-4">Kids Collections</h2>
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="card h-100 shadow-sm border-0">
+                                <img src="{% static 'images/k1.avif' %}" class="card-img-top" alt="Kids Dresses">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title fw-semibold">Dresses</h5>
+                                    <p class="card-text text-muted">Elegant dresses for every style and season.</p>
+                                    <a href="{% url 'product_list' category='kids' %}" class="btn btn-outline-primary rounded-pill btn-sm">
+                                        Shop Dresses
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card h-100 shadow-sm border-0">
+                                <img src="{% static 'images/ty1.avif' %}" class="card-img-top" alt="Kids Toys">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title fw-semibold">Toys</h5>
+                                    <p class="card-text text-muted">Fun and educational toys for kids of all ages.</p>
+                                    <a href="{% url 'product_list' category='toys' %}" class="btn btn-outline-primary rounded-pill btn-sm">
+                                        Shop Toys
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card h-100 shadow-sm border-0">
+                                <img src="{% static 'images/ba2.jpg' %}" class="card-img-top" alt="Baby Essentials">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title fw-semibold">Baby Essentials</h5>
+                                    <p class="card-text text-muted">Soft, comfy, and adorable essentials.</p>
+                                    <a href="{% url 'product_list' category='baby' %}" class="btn btn-outline-primary rounded-pill btn-sm">
+                                        Shop Baby Essentials
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <hr>
+                <section>
+                    <h2 class="mb-4">Accessories & Home</h2>
+                    <div class="row g-4">
+
+                        <div class="col-md-4">
+                            <div class="card h-100">
+                                <img src="{% static 'images/f1.avif' %}" class="card-img-top" alt="Footwears">
+                                <div class="card-body">
+                                    <h5 class="card-title">Footwears</h5>
+                                    <p class="card-text">Trendy and comfortable footwear for all occasions.</p>
+                                    <a href="{% url 'product_list' category='footwears' %}" class="btn btn-outline-primary btn-sm">Shop Footwears</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="card h-100">
+                                <img src="{% static 'images/bag1.jpg' %}" class="card-img-top" alt="Bags">
+                                <div class="card-body">
+                                    <h5 class="card-title">Bags</h5>
+                                    <p class="card-text">Stylish bags for travel, work, and everyday use.</p>
+                                    <a href="{% url 'product_list' category='bags' %}" class="btn btn-outline-primary btn-sm">Shop Bags</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="card h-100">
+                                <img src="{% static 'images/hom.jpg' %}" class="card-img-top" alt="Home Décor">
+                                <div class="card-body">
+                                    <h5 class="card-title">Home Décor</h5>
+                                    <p class="card-text">Add elegance to your home with our décor collection.</p>
+                                    <a href="{% url 'product_list' category='homedecors' %}" class="btn btn-outline-primary btn-sm">Shop Décor</a>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-4">
+                            <div class="card h-100">
+                                <img src="{% static 'images/art7.jpg' %}" class="card-img-top" alt="Pillars & Art Pieces">
+                                <div class="card-body">
+                                    <h5 class="card-title">Pillars & Art</h5>
+                                    <p class="card-text">Unique artistic pillars and decorative pieces for your space.</p>
+                                    <a href="{% url 'product_list' category='pillars' %}" class="btn btn-outline-primary btn-sm">Shop Art</a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+            {% endif %}
+        </main>
+    </div>
+</div>
+
+<div class="text-center mb-4">
+    <a href="{% url 'collection' %}?gender=men"
+        class="btn mx-1"
+        style="transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s, color 0.3s;
+                display:inline-block;
+                {% if selected_gender == 'men' %}background-color:#343a40;color:white;{% else %}background-color:white;color:#343a40;border:1px solid #343a40;{% endif %}">
+        Men
+    </a>
+    <a href="{% url 'collection' %}?gender=women"
+        class="btn mx-1"
+        style="transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s, color 0.3s;
+                display:inline-block;
+                {% if selected_gender == 'women' %}background-color:#343a40;color:white;{% else %}background-color:white;color:#343a40;border:1px solid #343a40;{% endif %}">
+        Women
+    </a>
+    <a href="{% url 'collection' %}?gender=kids"
+        class="btn mx-1"
+        style="transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s, color 0.3s;
+                display:inline-block;
+                {% if selected_gender == 'kids' %}background-color:#343a40;color:white;{% else %}background-color:white;color:#343a40;border:1px solid #343a40;{% endif %}">
+        Kids
+    </a>
+    <a href="{% url 'collection' %}?gender=access"
+        class="btn mx-1"
+        style="transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s, color 0.3s;
+                display:inline-block;
+                {% if selected_gender == 'access' %}background-color:#343a40;color:white;{% else %}background-color:white;color:#343a40;border:1px solid #343a40;{% endif %}">
+        Accessories
+    </a>
+    <a href="{% url 'collection' %}"
+        class="btn mx-1"
+        style="transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s, color 0.3s;
+                display:inline-block;
+                {% if not selected_gender %}background-color:#343a40;color:white;{% else %}background-color:white;color:#343a40;border:1px solid #343a40;{% endif %}">
+        All
+    </a>
+</div>
+
+<script>
+    // Button Hover Effects
+    const genderButtons = document.querySelectorAll('.text-center.mb-4 .btn');
+    genderButtons.forEach(btn => {
+        btn.addEventListener('mouseenter', () => {
+            btn.style.transform = 'scale(1.1)';
+            btn.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
+        });
+        btn.addEventListener('mouseleave', () => {
+            btn.style.transform = 'scale(1)';
+            btn.style.boxShadow = 'none';
+        });
+    });
+
+    // Reset Filters Functionality (Added HTML for button above)
+    document.getElementById('reset-filters').addEventListener('click', function(e) {
+        e.preventDefault();
+        // Redirects to the base collection URL, clearing all GET parameters
+        window.location.href = "{% url 'collection' %}";
+    });
+
+    // Update slider labels dynamically
+    const minSlider = document.getElementById('min_price');
+    const maxSlider = document.getElementById('max_price');
+    const minLabel = document.getElementById('min_price_val');
+    const maxLabel = document.getElementById('max_price_val');
+
+    minSlider.addEventListener('input', () => { minLabel.textContent = minSlider.value; });
+    maxSlider.addEventListener('input', () => { maxLabel.textContent = maxSlider.value; });
+</script>
+
+{% endblock %}

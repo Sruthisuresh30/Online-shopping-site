@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <div class="row g-4 align-items-start">
+        <!-- Product Info -->
+        <div class="col-md-6">
+          <!-- Breadcrumb -->
+          <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'collection' %}">Collection</a></li>
+              {% if category %}
+                <li class="breadcrumb-item">
+                  <a href="{% url 'product_list' category=category %}">{{ category|title }}</a>
+                </li>
+              {% endif %}
+              {% if product %}
+                <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+              {% endif %}
+            </ol>
+          </nav>
+
+          <!-- Product Title & Price -->
+          <h2 class="fw-bold mb-2">{{ product.name }}</h2>
+          <div class="fs-4 mb-3 text-muted">₹{{ product.price }}</div>
+
+          <!-- Size Selector -->
+          {% if sizes %}
+          <form class="mb-4">
+            <div class="mb-3">
+              <label for="size" class="form-label">Choose size:</label>
+              <select class="form-select w-auto d-inline-block" id="size" name="size">
+                {% for size in sizes %}
+                  <option value="{{ size }}">{{ size }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </form>
+          {% endif %}
+
+          <!-- Add to Cart & Wishlist Buttons -->
+          <form method="post" action="{% url 'cart' %}" class="mb-2 d-grid gap-2">
+            {% csrf_token %}
+            <input type="hidden" name="product_slug" value="{{ product.slug }}">
+            <button type="submit" class="btn btn-dark btn-lg rounded-1">ADD TO CART</button>
+          </form>
+
+          <form method="post" action="{% url 'wishlist' %}" class="d-grid gap-2 mb-4">
+            {% csrf_token %}
+            <input type="hidden" name="product_slug" value="{{ product.slug }}">
+            <button type="submit" class="btn btn-outline-dark btn-lg rounded-1">
+              <i class="bi bi-heart me-2"></i>ADD TO WISHLIST
+            </button>
+          </form>
+
+          <!-- About Product -->
+          <h5 class="fw-bold mb-2">About the Product</h5>
+          <div class="mb-2"><strong>Description:</strong></div>
+          <div class="mb-2">{{ product.description }}</div>
+          {% if product.composition %}
+            <div class="mb-2"><strong>Composition:</strong> {{ product.composition }}</div>
+          {% endif %}
+          {% if product.care %}
+            <div class="mb-2"><strong>Care of clothes:</strong> {{ product.care }}</div>
+          {% endif %}
+          {% if product.disclaimer %}
+            <div class="mb-2"><strong>Disclaimer:</strong> {{ product.disclaimer }}</div>
+          {% endif %}
+
+          <!-- Size & Measurements Section -->
+          <div class="mb-2 mt-4"><strong>Size & Measurements</strong></div>
+
+          {% comment %} Product Tables by Category {% endcomment %}
+          {% if product.category == 'pants' %}
+            <div class="table-responsive mb-3">
+              <table class="table table-bordered align-middle">
+                <thead>
+                  <tr>
+                    <th>Size</th>
+                    <th>To Fit Waist (cm)</th>
+                    <th>Inseam Length (cm)</th>
+                    <th>Hips (cm)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>28</td><td>71.1</td><td>78.7</td><td>96.5</td></tr>
+                  <tr><td>30</td><td>76.2</td><td>78.7</td><td>101.6</td></tr>
+                  <tr><td>32</td><td>81.3</td><td>78.7</td><td>106.7</td></tr>
+                  <tr><td>34</td><td>86.4</td><td>78.7</td><td>111.8</td></tr>
+                  <tr><td>36</td><td>91.4</td><td>78.7</td><td>116.8</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div>
+              <strong>How to Measure: </strong><br><br>
+              <img src="{% static 'images/how_to_measure.png' %}" alt="how to measure pants" class="img-fluid rounded-2" style="max-width: 100%;">
+            </div>
+
+          {% elif product.category == 'coats' %}
+            <div class="table-responsive mb-3">
+              <table class="table table-bordered align-middle">
+                <thead>
+                  <tr>
+                    <th>Size</th>
+                    <th>Chest (cm/in)</th>
+                    <th>Shoulder (cm/in)</th>
+                    <th>Length (cm/in)</th>
+                    <th>Sleeve (cm/in)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>M</td><td>120 / 47.2</td><td>57.5 / 22.6</td><td>105.5 / 41.5</td><td>54 / 21.3</td></tr>
+                  <tr><td>L</td><td>124 / 48.8</td><td>59 / 23.2</td><td>107 / 42.1</td><td>55 / 21.7</td></tr>
+                  <tr><td>XL</td><td>128 / 50.4</td><td>60.5 / 23.8</td><td>108.5 / 42.7</td><td>56 / 22.0</td></tr>
+                  <tr><td>2XL</td><td>132 / 52.0</td><td>62 / 24.4</td><td>110 / 43.3</td><td>57 / 22.4</td></tr>
+                  <tr><td>3XL</td><td>136 / 53.5</td><td>63.5 / 25.0</td><td>111.5 / 43.9</td><td>58 / 22.8</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="alert alert-secondary">
+              <small><i class="bi bi-info-circle me-2"></i>Please note that due to manual measurement, there may be a 1-3 cm deviation.</small>
+            </div>
+
+          {% elif product.category == 'dresses' %}
+            <div class="table-responsive mb-3">
+              <table class="table table-bordered align-middle">
+                <thead>
+                  <tr>
+                    <th>Size</th>
+                    <th>To Fit Bust (cm)</th>
+                    <th>To Fit Waist (cm)</th>
+                    <th>To Fit Hip (cm)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>XXS</td><td>76 - 79</td><td>61 - 64</td><td>84 - 86</td></tr>
+                  <tr><td>XS</td><td>81 - 84</td><td>66 - 69</td><td>89 - 91</td></tr>
+                  <tr><td>S</td><td>86 - 89</td><td>71 - 74</td><td>94 - 97</td></tr>
+                  <tr><td>M</td><td>91 - 94</td><td>76 - 79</td><td>99 - 102</td></tr>
+                  <tr><td>L</td><td>97 - 99</td><td>81 - 84</td><td>104 - 107</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="alert alert-info">
+              <small><i class="bi bi-info-circle me-2"></i>Measurements are provided in centimeters (cm). For best fit, measure yourself before selecting a size.</small>
+            </div>
+
+          {% elif product.category == 'tops' or product.category == 'shirts' %}
+            <div class="table-responsive mb-3">
+              <table class="table table-bordered align-middle">
+                <thead>
+                  <tr>
+                    <th>Size</th>
+                    <th>Bust (cm)</th>
+                    <th>Front Length (cm)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>S</td><td>84.1</td><td>37.1</td></tr>
+                  <tr><td>M</td><td>87.9</td><td>38.1</td></tr>
+                  <tr><td>L</td><td>91.9</td><td>39.1</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="mb-4">
+              <strong>How to Measure:</strong><br>
+              <img src="{% static 'images/top_measure.png' %}" alt="how to measure top" class="img-fluid rounded-2" style="max-width: 300px;">
+            </div>
+
+          {% elif product.category == 'pillars' or product.category == 'homedecors'  %}
+            <div class="mb-3">
+              <strong>Height:</strong> 180 cm<br>
+              <strong>Width:</strong> 40 cm<br>
+              <strong>Depth:</strong> 25 cm<br>
+              <strong>Material:</strong> Wood & Metal<br>
+              <strong>Weight:</strong> 15 kg
+            </div>
+            {% elif product.category == 'footwears' %}
+  <div class="mb-3">
+    <strong>Material:</strong> PU Leather / Synthetic / Fabric<br>
+    <strong>Type:</strong> Sandals / Heels / Sneakers / Flats<br>
+    <strong>Closure:</strong> Slip-on / Buckle / Lace-up<br>
+    <strong>Care:</strong> Wipe gently with a soft, dry cloth.
+  </div>
+  {% elif product.category == 'caps'%}
+
+  <div class="mb-3">
+    <strong>Material:</strong> Cotton / Polyester / Wool Blend<br>
+    <strong>Type:</strong> Baseball Cap / Bucket Hat / Beanie<br>
+    <strong>Size:</strong> Free Size / Adjustable Strap<br>
+    <strong>Care:</strong> Hand wash with mild detergent, air dry.
+  </div>
+  {% elif product.category == 'bags' %}
+  <div class="mb-3">
+    <strong>Material:</strong> Faux Leather / Canvas / Nylon<br>
+    <strong>Type:</strong> Handbag / Backpack / Sling / Tote<br>
+    <strong>Closure:</strong> Zip / Magnetic / Button<br>
+    <strong>Care:</strong> Wipe with damp cloth; avoid moisture.
+  </div>
+  {% elif product.category == 'jewellery' %}
+  <div class="mb-3">
+    <strong>Material:</strong> Alloy / Brass / Sterling Silver / Gold-Plated<br>
+    <strong>Type:</strong> Earrings / Necklace / Bracelet / Ring<br>
+    <strong>Finish:</strong> Polished / Matte / Textured<br>
+    <strong>Care:</strong> Keep away from water and perfumes.
+  </div>
+      {% elif product.category == 'kids' or product.category == 'kids_dresses' %}
+  <div class="mb-3">
+    <strong>Material:</strong> 100% Cotton / Cotton Blend<br>
+    <strong>Style:</strong> Casual / Party / Ethnic Wear<br>
+    <strong>Age Group:</strong> 1–10 Years<br>
+    <strong>Care:</strong> Machine wash gentle, use mild detergent.
+  </div>
+      {% elif product.category == 'toys' or product.category == 'building_blocks' %}
+  <div class="mb-3">
+    <strong>Material:</strong> Non-toxic Plastic / Wood<br>
+    <strong>Type:</strong> Educational / Puzzle / Activity Toy<br>
+    <strong>Recommended Age:</strong> 3+ Years<br>
+    <strong>Care:</strong> Wipe clean with dry cloth, avoid water.
+  </div>
+  {% elif product.category == 'baby' %}
+  <div class="mb-3">
+    <strong>Material:</strong> Soft Cotton / Organic Fabric / BPA-free Plastic<br>
+    <strong>Items:</strong> Towels / Bibs / Bottles / Diapers<br>
+    <strong>Age Group:</strong> Newborn – 2 Years<br>
+    <strong>Care:</strong> Hand wash or gentle machine wash.
+  </div>
+          {% else %}
+            <div class="table-responsive mb-3">
+              <table class="table table-bordered align-middle">
+                <thead>
+                  <tr>
+                    <th>Size</th>
+                    <th>Width</th>
+                    <th>Length</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>XS</td><td>104 cm</td><td>70 cm</td></tr>
+                  <tr><td>S</td><td>112 cm</td><td>72 cm</td></tr>
+                  <tr><td>M</td><td>120 cm</td><td>73 cm</td></tr>
+                  <tr><td>L</td><td>128 cm</td><td>75 cm</td></tr>
+                  <tr><td>XL</td><td>136 cm</td><td>76 cm</td></tr>
+                  <tr><td>XXL</td><td>144 cm</td><td>77 cm</td></tr>
+                </tbody>
+              </table>
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- Product Image -->
+        <div class="col-md-6">
+          <div class="rounded-4 d-flex align-items-center justify-content-center p-4" style="min-height:420px; background: transparent;">
+            <img src="{{ product.image.url }}" class="img-fluid rounded-3" alt="{{ product.name }}" style="max-height: 400px;">
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+{% endblock %}
